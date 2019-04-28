@@ -11,7 +11,7 @@ namespace Internal
 {
 	// Trivial component allocator.
 	template< typename TComponent, typename THost, typename = void >
-	struct ComponentAllocator final
+	struct ComponentConstructionPolicy final
 	{
 		// Construct the component using the given memory.
 		inline TComponent* Construct( void* memory, const size_t host_offset ) const	{ return new( memory ) TComponent{}; };
@@ -22,7 +22,7 @@ namespace Internal
 
 	// Exclusive component allocator to allocate smart components.
 	template< typename TComponent, typename THost >
-	struct ComponentAllocator<TComponent, THost, Black::EnableIf<Black::IS_BASE_OF<Black::CompositionComponent<THost>, TComponent>>> final
+	struct ComponentConstructionPolicy<TComponent, THost, Black::EnableIf<Black::IS_BASE_OF<Black::CompositionComponent<THost>, TComponent>>> final
 	{
 		// Construct the component using the given memory.
 		inline TComponent* Construct( void* memory, const size_t host_offset ) const	{ return new( memory ) TComponent{ host_offset }; };
