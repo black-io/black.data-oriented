@@ -10,7 +10,7 @@ inline namespace Composition
 namespace Internal
 {
 	// Block of structured memory.
-	template< size_t BLOCK_SIZE, size_t BLOCK_ALIGNMENT, size_t... OFFSETS >
+	template< size_t BLOCK_SIZE, size_t BLOCK_ALIGNMENT, typename TOffsets >
 	class StructuredMemoryBlock : private MemoryBlock<BLOCK_SIZE, BLOCK_ALIGNMENT>
 	{
 	// Public interface.
@@ -23,7 +23,7 @@ namespace Internal
 
 
 		// Get the number of valid offsets.
-		constexpr const size_t GetOffsetsCount() const					{ return sizeof...( OFFSETS ); };
+		constexpr const size_t GetOffsetsCount() const					{ return TOffsets::LENGTH; };
 
 	// Private inner types.
 	private:
@@ -33,14 +33,10 @@ namespace Internal
 	// Private interface.
 	private:
 		// Get the offset by index.
-		static inline const size_t GetOffset( const size_t offset_index )	{ return TestOffsetIndex( offset_index ), INDEXED_OFFSETS[ offset_index ]; };
+		static inline const size_t GetOffset( const size_t offset_index )	{ return TestOffsetIndex( offset_index ), TOffsets::ITEMS[ offset_index ]; };
 
 		// Test the offset index to fit the range of allowed offsets.
-		static inline void TestOffsetIndex( const size_t offset_index )		{ EXPECTS_DEBUG( offset_index < sizeof...( OFFSETS ) ); };
-
-	// Private fields.
-	private:
-		static constexpr const size_t INDEXED_OFFSETS[] = { OFFSETS... };
+		static inline void TestOffsetIndex( const size_t offset_index )		{ EXPECTS_DEBUG( offset_index < TOffsets::LENGTH ); };
 	};
 }
 }
