@@ -23,6 +23,17 @@ namespace Internal
 		static constexpr const size_t OFFSET	= CHUNK_OFFSET;
 	};
 
+	// Trivial numeric collection.
+	template< size_t... NUMBERS >
+	struct NumericCollection final
+	{
+		// Collection representation.
+		static constexpr const size_t ITEMS[]	= { NUMBERS... };
+
+		// Length of collection.
+		static constexpr const size_t LENGTH	= sizeof...( NUMBERS );
+	};
+
 	// Component indexing helper. Used to associate the component type with ordinal index in list.
 	template< typename TComponent, typename TList, size_t BASE_INDEX >
 	struct ComponentIndexHelper;
