@@ -9,34 +9,18 @@ inline namespace Composition
 {
 namespace Internal
 {
-	// Compile-time representation for memory chunk information.
-	template< size_t CHUNK_SIZE, size_t CHUNK_ALIGNMENT, size_t CHUNK_OFFSET >
-	struct MemoryChunkInfo final
-	{
-		// Specified size of chunk.
-		static constexpr const size_t SIZE		= CHUNK_SIZE;
-
-		// Specified alignment of chunk.
-		static constexpr const size_t ALIGNMENT	= CHUNK_ALIGNMENT;
-
-		// Specified internal offset of chunk.
-		static constexpr const size_t OFFSET	= CHUNK_OFFSET;
-	};
-
-	// Trivial numeric collection.
-	template< size_t... NUMBERS >
-	struct NumericCollection final
-	{
-		// Collection representation.
-		static constexpr const size_t ITEMS[]	= { NUMBERS... };
-
-		// Length of collection.
-		static constexpr const size_t LENGTH	= sizeof...( NUMBERS );
-	};
-
 	// Component indexing helper. Used to associate the component type with ordinal index in list.
 	template< typename TComponent, typename TList, size_t BASE_INDEX >
 	struct ComponentIndexHelper;
+
+	// Deduction branch. Looking for the component in list.
+	template< typename TComponent, size_t BASE_INDEX, typename TCurrent, typename... TRest >
+	struct ComponentIndexHelper<TComponent, TypesCollection<TCurrent, TRest...>, BASE_INDEX> final
+	{
+		using NextHelper = typename ComponentIndexHelper<TComponent, typename TypesCollection<TRest...>, BASE_INDEX + 1>;
+
+		static constexpr const size_t Find()	{ return NextHelper::Find(); };
+	};
 
 	// Terminal branch. The component is not found.
 	template< typename TComponent, size_t BASE_INDEX >
@@ -52,15 +36,6 @@ namespace Internal
 		static constexpr const size_t Find()	{ return BASE_INDEX; };
 	};
 
-	// Deduction branch. Looking for the component in list.
-	template< typename TComponent, size_t BASE_INDEX, typename TCurrent, typename... TRest >
-	struct ComponentIndexHelper<TComponent, TypesCollection<TCurrent, TRest...>, BASE_INDEX> final
-	{
-		using NextHelper = typename ComponentIndexHelper<TComponent, typename TypesCollection<TRest...>, BASE_INDEX + 1>;
-
-		static constexpr const size_t Find()	{ return NextHelper::Find(); };
-	};
-
 	// Helps to unpack any inner packed collections into single top-ranked collection.
 	template< typename TBasicCollection, typename... TRawComponents >
 	struct CollectionUnpackHelper;
@@ -70,9 +45,9 @@ namespace Internal
 	struct CollectionUnpackHelper<TypesCollection<TRefinedComponents...>, TRawHead, TRawRest...>
 		: CollectionUnpackHelper<TypesCollection<TRefinedComponents..., TRawHead>, TRawRest...>
 	{
-		static_assert( !Black::IS_CONST<TRawHead>, "The type of component should not be constant." );
-		static_assert( !Black::IS_REFERENCE<TRawHead>, "The type of component should not be reference." );
-		static_assert( !Black::IS_POINTER<TRawHead>, "The type of component should not be pointer." );
+		static_assert( !Black::IS_CONST<TRawHead>,		"The type of component should not be constant." );
+		static_assert( !Black::IS_REFERENCE<TRawHead>,	"The type of component should not be reference." );
+		static_assert( !Black::IS_POINTER<TRawHead>,	"The type of component should not be pointer." );
 	};
 
 	// Unpacking branch. Unpack the collection into top-ranked one.
@@ -95,6 +70,10 @@ namespace Internal
 	template< typename... TRefinedComponents, typename TRawComponent >
 	struct CollectionUnpackHelper<TypesCollection<TRefinedComponents...>, TRawComponent>
 	{
+		static_assert( !Black::IS_CONST<TRawComponent>,		"The type of component should not be constant." );
+		static_assert( !Black::IS_REFERENCE<TRawComponent>,	"The type of component should not be reference." );
+		static_assert( !Black::IS_POINTER<TRawComponent>,	"The type of component should not be pointer." );
+
 		using Components = TypesCollection<TRefinedComponents..., TRawComponent>;
 	};
 }
