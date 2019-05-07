@@ -15,6 +15,11 @@ namespace Internal
 		: private AllocationMask<TComponentMap::COMPONENTS_COUNT>
 		, private StructuredMemoryBlock<TComponentMap::SIZE, TComponentMap::ALIGNMENT, typename TComponentMap::OffsetCollection>
 	{
+	// Public inner types.
+	public:
+		// Ordinal collection of mapped components.
+		using Components = typename TComponentMap::Components;
+
 	// Public interface.
 	public:
 		// Get the memory for slot.
