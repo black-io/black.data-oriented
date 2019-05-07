@@ -9,6 +9,10 @@ inline namespace Composition
 {
 namespace Internal
 {
+	// Internal numeric collection for sizes and offsets.
+	template< size_t... NUMBERS >
+	using NumericCollection = Black::NumericCollection<size_t, NUMBERS...>;
+
 	// Component indexing helper. Used to associate the component type with ordinal index in list.
 	template< typename TComponent, typename TList, size_t BASE_INDEX >
 	struct ComponentIndexHelper;
