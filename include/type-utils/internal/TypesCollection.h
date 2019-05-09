@@ -55,10 +55,7 @@ namespace Internal
 	struct TypesCollectionUnfoldHelper<TypesCollection<TRawHead, TRawRest...>, TUnfoldedTypes...>
 		: TypesCollectionUnfoldHelper<TypesCollection<TRawRest...>, TUnfoldedTypes..., TRawHead>
 	{
-		static_assert( !Black::IS_VOID<TRawHead>, "The type should not be void." );
-		static_assert( !Black::IS_CONST<TRawHead>, "The type should not be const." );
-		static_assert( !Black::IS_POINTER<TRawHead>, "The type should not be pointer." );
-		static_assert( !Black::IS_REFERENCE<TRawHead>, "The type should not be reference." );
+
 	};
 
 	// Deduction branch. Unfold the inner collection.
