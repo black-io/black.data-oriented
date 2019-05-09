@@ -7,12 +7,13 @@ inline namespace DataOriented
 {
 inline namespace TypeUtils
 {
-namespace Internal
-{
 	// Trivial numeric collection.
 	template< typename TNumberType, TNumberType... NUMBERS >
 	struct NumericCollection;
 
+
+namespace Internal
+{
 	// Helper to merge the tail into numeric collection.
 	template< typename TNumberType, typename TTailNumbers, TNumberType... NUMBERS >
 	struct NumericCollectionTailMerger;
