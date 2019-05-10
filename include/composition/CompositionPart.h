@@ -29,14 +29,14 @@ inline namespace Composition
 		@tparam	THost	The type of host for specific composition part.
 	*/
 	template< typename THost >
-	class CompositionComponent : private Black::NonTransferable
+	class CompositionPart : private Black::NonTransferable
 	{
 	// Construction.
 	public:
-		CompositionComponent()	= delete;
-		CompositionComponent( const size_t host_offset ) : m_host_offset{ host_offset } {};
+		CompositionPart()	= delete;
+		CompositionPart( const size_t host_offset ) : m_host_offset{ host_offset } {};
 
-		~CompositionComponent()	= default;
+		~CompositionPart()	= default;
 
 	// Heirs interface.
 	protected:
