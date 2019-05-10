@@ -27,7 +27,7 @@ inline namespace TypeUtils
 
 		// Merge the given number collection into the tail of collection.
 		template< typename TOtherNumbers >
-		using MergeTailCollection	= typename Internal::NumericCollectionTailMerger<TNumberType, TOtherNumbers, NUMBERS...>::Result;
+		using MergeTailCollection	= typename TOtherNumbers::template MergeHeadNumbers<NUMBERS...>;
 
 		// Merge the numbers into the head of collection.
 		template< TNumberType... OTHER_NUMBERS >
