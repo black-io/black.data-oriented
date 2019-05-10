@@ -21,21 +21,21 @@ inline namespace TypeUtils
 		template< TNumberType PORTION >
 		using DecreaseEach			= NumericCollection<TNumberType, ( NUMBERS - PORTION )...>;
 
-		// Merge the numbers into the tail of collection.
-		template< TNumberType... OTHER_NUMBERS >
-		using MergeTailNumbers		= NumericCollection<TNumberType, NUMBERS..., OTHER_NUMBERS...>;
-
-		// Merge the given number collection into the tail of collection.
-		template< typename TOtherNumbers >
-		using MergeTailCollection	= typename TOtherNumbers::template MergeHeadNumbers<NUMBERS...>;
-
 		// Merge the numbers into the head of collection.
 		template< TNumberType... OTHER_NUMBERS >
 		using MergeHeadNumbers		= NumericCollection<TNumberType, OTHER_NUMBERS..., NUMBERS...>;
 
+		// Merge the numbers into the tail of collection.
+		template< TNumberType... OTHER_NUMBERS >
+		using MergeTailNumbers		= NumericCollection<TNumberType, NUMBERS..., OTHER_NUMBERS...>;
+
 		// Merge the numbers into the head of collection.
 		template< typename TOtherNumbers >
 		using MergeHeadCollection	= typename TOtherNumbers::template MergeTailNumbers<NUMBERS...>;
+
+		// Merge the given number collection into the tail of collection.
+		template< typename TOtherNumbers >
+		using MergeTailCollection	= typename TOtherNumbers::template MergeHeadNumbers<NUMBERS...>;
 
 
 		// Length of collection.
