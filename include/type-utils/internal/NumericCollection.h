@@ -14,18 +14,6 @@ inline namespace TypeUtils
 
 namespace Internal
 {
-	// Helper to merge the tail into numeric collection.
-	template< typename TNumberType, typename TTailNumbers, TNumberType... NUMBERS >
-	struct NumericCollectionTailMerger;
-
-	// Helper to merge the tail into numeric collection.
-	template< typename TNumberType, TNumberType... NUMBERS, TNumberType... TAIL_NUMBERS >
-	struct NumericCollectionTailMerger<TNumberType, NumericCollection<TNumberType, TAIL_NUMBERS...>, NUMBERS...> final
-	{
-		// Result of merging.
-		using Result = NumericCollection<TNumberType, NUMBERS..., TAIL_NUMBERS...>;
-	};
-
 	// Helper to detect the minimum number of collection.
 	// @TODO: Use `std::min` from C++14.
 	template< typename TNumberType, TNumberType... NUMBERS >
