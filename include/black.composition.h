@@ -32,6 +32,8 @@ namespace Internal
 #include "composition/intrenal/AllocationMask.h"
 #include "composition/intrenal/ComponentConstructionPolicy.h"
 #include "composition/intrenal/ComponentAllocationMediator.h"
+
+#include "composition/intrenal/TypesCollectionOffsetBuilder.h"
 #include "composition/intrenal/ComponentMapping.h"
 
 // Implementation of composition mediator.
