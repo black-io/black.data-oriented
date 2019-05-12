@@ -47,7 +47,7 @@ inline namespace Composition
 	template< typename THost, typename... TAllowedParts >
 	inline void CompositionMediator<THost, TAllowedParts...>::DestructAllParts()
 	{
-		using DestructorList = Internal::PartsDeconstructorList<THost, Parts>;
+		using DestructorList = Internal::PartDestructorList<THost, Parts>;
 
 		for( size_t part_index = 0; part_index < Parts::LENGTH; ++part_index )
 		{

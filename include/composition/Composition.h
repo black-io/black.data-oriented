@@ -67,7 +67,7 @@ inline namespace Composition
 	private:
 		// Construction policy template.
 		template< typename TPart >
-		using ConstructionPolicy	= Internal::ComponentConstructionPolicy<TPart, THost>;
+		using ConstructionPolicy	= Internal::PartConstructionPolicy<TPart, THost>;
 
 
 		// Part mapping.
