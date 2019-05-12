@@ -29,9 +29,9 @@ namespace Internal
 #include "composition/intrenal/MemoryBlock.h"
 #include "composition/intrenal/StructuredMemoryBlock.h"
 #include "composition/intrenal/AllocationMask.h"
+#include "composition/intrenal/PartitionMediator.h"
 
-#include "composition/intrenal/ComponentAllocationMediator.h"
-
+// Structured information about composition parts.
 #include "composition/intrenal/TypesCollectionOffsetBuilder.h"
 #include "composition/intrenal/PartitionMap.h"
 
