@@ -26,9 +26,9 @@ namespace Internal
 #include "composition/intrenal/internal.struct.h"
 
 // Regular support for composition storage.
-#include "composition/intrenal/MemoryBlock.h"
-#include "composition/intrenal/StructuredMemoryBlock.h"
 #include "composition/intrenal/AllocationMask.h"
+#include "composition/intrenal/MemoryBlock.h"
+#include "composition/intrenal/PartitionBlock.h"
 #include "composition/intrenal/PartitionMediator.h"
 
 // Structured information about composition parts.
