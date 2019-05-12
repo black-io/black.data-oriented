@@ -28,6 +28,9 @@ namespace Internal
 		// Get the memory for slot.
 		inline const void* GetMemory( const size_t index ) const	{ return Buffer::GetMemory( index ); };
 
+		// Get the offset for slot.
+		inline const size_t GetOffset( const size_t index ) const	{ return Buffer::GetOffset( index ); };
+
 
 		// Mark the memory slot as allocated.
 		inline void SetAllocated( const size_t index )				{ Bits::MarkAllocated( index ); };
