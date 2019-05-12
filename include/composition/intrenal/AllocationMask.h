@@ -11,7 +11,7 @@ namespace Internal
 {
 	// Component allocation mask.
 	template< size_t MASK_LENGH >
-	class AllocationMask : private Black::NonTransferable
+	class AllocationMask
 	{
 	// Construction and assignment.
 	public:
@@ -33,38 +33,44 @@ namespace Internal
 	// Private inner stuff.
 	private:
 		// Storage for bit-mask.
-		using BitStorage = size_t;
+		using StorageElement = size_t;
+
+		// Storage element alignment in bits.
+		static constexpr const size_t ELEMENT_ALIGNMENT	= alignof( StorageElement ) * 8;
+
+		// Storage element size on bits.
+		static constexpr const size_t ELEMENT_SIZE		= sizeof( StorageElement ) * 8;
 
 		// Aligned length of bit-mask storage.
-		static constexpr const size_t STORAGE_LENGTH	= Black::GetAlignedSize( MASK_LENGH, sizeof( BitStorage ) ) / sizeof( BitStorage );
+		static constexpr const size_t STORAGE_LENGTH	= Black::GetAlignedSize( MASK_LENGH, ELEMENT_ALIGNMENT ) / ELEMENT_SIZE;
 
 		// Single first bit of storage.
-		static constexpr const BitStorage FirstBit		= 1;
+		static constexpr const StorageElement FirstBit	= 1;
 
 	// Private interface.
 	private:
 		// Get index of storage for given allocation index.
-		static constexpr const size_t GetStorageIndex( const size_t allocation_index )			{ return allocation_index / sizeof( BitStorage ); };
+		static constexpr const size_t GetStorageIndex( const size_t allocation_index )				{ return allocation_index / sizeof( StorageElement ); };
 
 		// Get index of bit inside of storage for give allocation index.
-		static constexpr const size_t GetAllocationBit( const size_t allocation_index )			{ return allocation_index % sizeof( BitStorage ); };
+		static constexpr const size_t GetAllocationBit( const size_t allocation_index )				{ return allocation_index % sizeof( StorageElement ); };
 
 		// Get the bit-mask for given allocation index.
-		static constexpr const BitStorage GetAllocationMask( const size_t allocation_index )	{ return FirstBit << GetAllocationBit( allocation_index ); };
+		static constexpr const StorageElement GetAllocationMask( const size_t allocation_index )	{ return FirstBit << GetAllocationBit( allocation_index ); };
 
 		// Test the allocation index to be valid.
-		static inline void TestIndex( const size_t allocation_index )							{ EXPECTS_DEBUG( allocation_index < MASK_LENGH ); };
+		static inline void TestIndex( const size_t allocation_index )								{ EXPECTS_DEBUG( allocation_index < MASK_LENGH ); };
 
 
 		// Get bit storage for given allocation index.
-		inline BitStorage& GetStorage( const size_t allocation_index )							{ return m_bits[ GetStorageIndex( allocation_index ) ]; };
+		inline StorageElement& GetStorage( const size_t allocation_index )							{ return m_bits[ GetStorageIndex( allocation_index ) ]; };
 
 		// Get bit storage for given allocation index.
-		inline const BitStorage GetStorage( const size_t allocation_index ) const				{ return m_bits[ GetStorageIndex( allocation_index ) ]; };
+		inline const StorageElement GetStorage( const size_t allocation_index ) const				{ return m_bits[ GetStorageIndex( allocation_index ) ]; };
 
 	// Private state.
 	private:
-		BitStorage	m_bits[ STORAGE_LENGTH ];	// Allocation bits storage.
+		StorageElement	m_bits[ STORAGE_LENGTH ];	// Allocation bits storage.
 	};
 }
 }
