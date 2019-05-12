@@ -24,14 +24,18 @@ namespace Internal
 
 // Most core definitions.
 #include "composition/intrenal/internal.struct.h"
+#include "composition/CompositionPart.h"
 
-// Size extraction adapter
-// Alignment extraction adapter
-// Composition length (int components) adapter.
-
+// Regular support for composition storage.
 #include "composition/intrenal/MemoryBlock.h"
-// MemoryStructuredBlock
-// Basic component (optional inheritance)
+#include "composition/intrenal/StructuredMemoryBlock.h"
+#include "composition/intrenal/AllocationMask.h"
+#include "composition/intrenal/ComponentConstructionPolicy.h"
+#include "composition/intrenal/ComponentAllocationMediator.h"
+#include "composition/intrenal/ComponentMapping.h"
 
-// Composition container.
-// Composition
+// Implementation of composition mediator.
+#include "composition/CompositionMediator.h"
+
+// Deferred implementations.
+#include "composition/CompositionMediator.inl"
