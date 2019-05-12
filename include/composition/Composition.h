@@ -9,7 +9,7 @@ inline namespace Composition
 {
 	// Composition storage implementation.
 	template< typename THost, typename... TAllowedParts >
-	class CompositionMediator : private Black::NonTransferable, private Internal::ComponentAllocationMediator<Internal::ComponentMapping<TAllowedParts...>>
+	class CompositionMediator : private Black::NonTransferable, private Internal::ComponentAllocationMediator<Internal::PartitionMap<TAllowedParts...>>
 	{
 	// Construction and assignment.
 	public:
@@ -71,13 +71,13 @@ inline namespace Composition
 
 
 		// Part mapping.
-		using PartMap				= Internal::ComponentMapping<TAllowedParts...>;
+		using PartitionMap				= Internal::PartitionMap<TAllowedParts...>;
 
 		// Allocation mediator type.
-		using AllocationMediator	= Internal::ComponentAllocationMediator<PartMap>;
+		using AllocationMediator	= Internal::ComponentAllocationMediator<PartitionMap>;
 
 		// List of used components.
-		using Parts					= typename PartMap::Components;
+		using Parts					= typename PartitionMap::Parts;
 
 	// Private interface.
 	private:

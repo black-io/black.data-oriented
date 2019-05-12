@@ -33,7 +33,7 @@ namespace Internal
 #include "composition/intrenal/ComponentAllocationMediator.h"
 
 #include "composition/intrenal/TypesCollectionOffsetBuilder.h"
-#include "composition/intrenal/ComponentMapping.h"
+#include "composition/intrenal/PartitionMap.h"
 
 // Implementation of composition mediator.
 #include "composition/CompositionPart.h"

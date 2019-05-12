@@ -18,7 +18,7 @@ namespace Internal
 	// Public inner types.
 	public:
 		// Ordinal collection of mapped components.
-		using Components = typename TComponentMap::Components;
+		using Parts = typename TComponentMap::Parts;
 
 	// Public interface.
 	public:
