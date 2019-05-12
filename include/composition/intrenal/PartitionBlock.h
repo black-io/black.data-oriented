@@ -37,7 +37,7 @@ namespace Internal
 	// Private interface.
 	private:
 		// Test the offset index to fit the range of allowed offsets.
-		static inline void TestOffsetIndex( const size_t offset_index )		{ EXPECTS_DEBUG( offset_index < TOffsets::LENGTH ); };
+		static inline void TestOffsetIndex( const size_t offset_index )			{ EXPECTS_DEBUG( offset_index < TOffsets::LENGTH ); };
 	};
 }
 }
