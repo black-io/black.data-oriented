@@ -11,7 +11,7 @@ namespace Internal
 {
 	// Trivial component allocator.
 	template< typename TComponent, typename THost, typename = void >
-	struct ComponentConstructionPolicy final
+	struct PartConstructionPolicy final
 	{
 		// Construct the component using the given memory.
 		static inline TComponent* Construct( void* memory, const size_t host_offset )	{ return new( memory ) TComponent{}; };
@@ -26,7 +26,7 @@ namespace Internal
 
 	// Exclusive component allocator to allocate smart components.
 	template< typename TComponent, typename THost >
-	struct ComponentConstructionPolicy<TComponent, THost, Black::EnableIf<Black::IS_BASE_OF<Black::CompositionPart<THost>, TComponent>>> final
+	struct PartConstructionPolicy<TComponent, THost, Black::EnableIf<Black::IS_BASE_OF<Black::CompositionPart<THost>, TComponent>>> final
 	{
 		// Construct the component using the given memory.
 		static inline TComponent* Construct( void* memory, const size_t host_offset )	{ return new( memory ) TComponent{ host_offset }; };
@@ -43,7 +43,7 @@ namespace Internal
 	struct PartsDeconstructorList
 	{
 		static constexpr const Black::GlobalFunctionPointer<void, void*> FUNCTIONS[] = {
-			&ComponentConstructionPolicy<TParts, THost>::Destruct...
+			&PartConstructionPolicy<TParts, THost>::Destruct...
 		};
 	};
 
