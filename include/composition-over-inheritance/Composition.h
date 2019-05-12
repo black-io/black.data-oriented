@@ -5,16 +5,38 @@ namespace Black
 {
 inline namespace DataOriented
 {
-inline namespace Composition
+inline namespace CompositionOverInheritance
 {
-	// Composition storage implementation.
+	/**
+		@brief	Composition implementation.
+		This template implements the storage for `Composition over inheritance` paradigm.
+		The collection of composition parts should be used to instantiate the type from template.
+		The type of composition host is required also. It is required to implement the access to host from composition part.
+
+		It's allowed to combine the composition parts inside of `Black::TypesCollection` and `Black::TypesUnion` collections.
+		In this case, the parts in `Black::TypesCollection` will be considered as grouped sequence of parts in memory.
+		In opposition, the `Black::TypesUnion` describes the parts inside as `union` of types, which occupy the same wide-enough memory.
+		It is possible to declare any combination of collections and unions of components.
+
+		The composition totally controls the lifetime of its parts. Memory controlled as well. All parts are placed inside of composition.
+		But also some notes should be taken in consideration about memory usage. There not all parts takes its own memory in composition.
+		All parts of `Black::TypesUnion` shares same memory space, which is well-aligned and well-sized to fit any part of union.
+		The `Black::TypesUnion` collection may be used to declare the list of mutually exclusive parts, which will never been constructed together for host.
+		All parts of `Black::TypesCollection` shares only the top-alignment, but in memory the parts will be placed one by one.
+		So that the `Black::TypesCollection` implements the semantics of `struct`, but `Black::TypesUnion` implements the semantics of `union` for parts.
+
+		Before destruction, the composition destructs all currently constructed parts automatically.
+
+		@tparam	THost			Host of composition.
+		@tparam	TAllowedParts	Structured list of composition parts.
+	*/
 	template< typename THost, typename... TAllowedParts >
-	class CompositionMediator : private Black::NonTransferable, private Internal::PartitionMediator<Internal::PartitionMap<TAllowedParts...>>
+	class Composition : private Black::NonTransferable, private Internal::PartitionMediator<Internal::PartitionMap<TAllowedParts...>>
 	{
 	// Construction and assignment.
 	public:
-		CompositionMediator();
-		~CompositionMediator();
+		Composition();
+		~Composition();
 
 	// Public interface.
 	public:
@@ -71,7 +93,7 @@ inline namespace Composition
 
 
 		// Part mapping.
-		using PartitionMap				= Internal::PartitionMap<TAllowedParts...>;
+		using PartitionMap			= Internal::PartitionMap<TAllowedParts...>;
 
 		// Allocation mediator type.
 		using AllocationMediator	= Internal::PartitionMediator<PartitionMap>;

@@ -5,7 +5,7 @@ namespace Black
 {
 inline namespace DataOriented
 {
-inline namespace Composition
+inline namespace CompositionOverInheritance
 {
 namespace Internal
 {

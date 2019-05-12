@@ -5,23 +5,23 @@ namespace Black
 {
 inline namespace DataOriented
 {
-inline namespace Composition
+inline namespace CompositionOverInheritance
 {
 	template< typename THost, typename... TAllowedParts >
-	CompositionMediator<THost, TAllowedParts...>::CompositionMediator()
+	Composition<THost, TAllowedParts...>::Composition()
 	{
-		static_assert( Black::IS_BASE_OF<CompositionMediator<THost, TAllowedParts...>, THost>, "The host type should be derived from composition mediator." );
+		static_assert( Black::IS_BASE_OF<Composition<THost, TAllowedParts...>, THost>, "The host type should be derived from composition mediator." );
 	}
 
 	template< typename THost, typename... TAllowedParts >
-	CompositionMediator<THost, TAllowedParts...>::~CompositionMediator()
+	Composition<THost, TAllowedParts...>::~Composition()
 	{
 		DestructAllParts();
 	}
 
 	template< typename THost, typename... TAllowedParts >
 	template< typename TPart >
-	inline TPart& CompositionMediator<THost, TAllowedParts...>::ConstructPart()
+	inline TPart& Composition<THost, TAllowedParts...>::ConstructPart()
 	{
 		const size_t part_index = GetPartIndex<TPart>();
 		void* part_memory = AllocationMediator::GetMemory( part_index );
@@ -33,7 +33,7 @@ inline namespace Composition
 
 	template< typename THost, typename... TAllowedParts >
 	template< typename TPart >
-	inline void CompositionMediator<THost, TAllowedParts...>::DestructPart()
+	inline void Composition<THost, TAllowedParts...>::DestructPart()
 	{
 		const size_t part_index = GetPartIndex<TPart>();
 
@@ -45,7 +45,7 @@ inline namespace Composition
 	}
 
 	template< typename THost, typename... TAllowedParts >
-	inline void CompositionMediator<THost, TAllowedParts...>::DestructAllParts()
+	inline void Composition<THost, TAllowedParts...>::DestructAllParts()
 	{
 		using DestructorList = Internal::PartDestructorList<THost, Parts>;
 
@@ -60,7 +60,7 @@ inline namespace Composition
 
 	template< typename THost, typename... TAllowedParts >
 	template< typename TPart >
-	inline TPart& CompositionMediator<THost, TAllowedParts...>::GetPart()
+	inline TPart& Composition<THost, TAllowedParts...>::GetPart()
 	{
 		TPart* part = QueryPart<TPart>();
 		EXPECTS( part != nullptr );
@@ -70,7 +70,7 @@ inline namespace Composition
 
 	template< typename THost, typename... TAllowedParts >
 	template< typename TPart >
-	inline const TPart& CompositionMediator<THost, TAllowedParts...>::GetPart() const
+	inline const TPart& Composition<THost, TAllowedParts...>::GetPart() const
 	{
 		const TPart* part = QueryPart<TPart>();
 		EXPECTS( part != nullptr );
@@ -80,7 +80,7 @@ inline namespace Composition
 
 	template< typename THost, typename... TAllowedParts >
 	template< typename TPart >
-	inline TPart* CompositionMediator<THost, TAllowedParts...>::QueryPart()
+	inline TPart* Composition<THost, TAllowedParts...>::QueryPart()
 	{
 		const size_t part_index = GetPartIndex<TPart>();
 
@@ -90,7 +90,7 @@ inline namespace Composition
 
 	template< typename THost, typename... TAllowedParts >
 	template< typename TPart >
-	inline const TPart* CompositionMediator<THost, TAllowedParts...>::QueryPart() const
+	inline const TPart* Composition<THost, TAllowedParts...>::QueryPart() const
 	{
 		const size_t part_index = GetPartIndex<TPart>();
 
@@ -100,21 +100,21 @@ inline namespace Composition
 
 	template< typename THost, typename... TAllowedParts >
 	template< typename TPart >
-	inline const bool CompositionMediator<THost, TAllowedParts...>::CanConstructPart() const
+	inline const bool Composition<THost, TAllowedParts...>::CanConstructPart() const
 	{
 		return true;
 	}
 
 	template< typename THost, typename... TAllowedParts >
 	template< typename TPart >
-	inline const bool CompositionMediator<THost, TAllowedParts...>::HasPart() const
+	inline const bool Composition<THost, TAllowedParts...>::HasPart() const
 	{
 		return AllocationMediator::IsAllocated( GetPartIndex<TPart>() );
 	}
 
 	template< typename THost, typename... TAllowedParts >
 	template< typename... TParts >
-	inline const bool CompositionMediator<THost, TAllowedParts...>::HasAnyPart() const
+	inline const bool Composition<THost, TAllowedParts...>::HasAnyPart() const
 	{
 		const size_t part_indices[] = { GetPartIndex<TParts>()... };
 
@@ -130,7 +130,7 @@ inline namespace Composition
 
 	template< typename THost, typename... TAllowedParts >
 	template< typename... TParts >
-	inline const bool CompositionMediator<THost, TAllowedParts...>::HasAllParts() const
+	inline const bool Composition<THost, TAllowedParts...>::HasAllParts() const
 	{
 		const size_t part_indices[] = { GetPartIndex<TParts>()... };
 
@@ -145,7 +145,7 @@ inline namespace Composition
 	}
 
 	template< typename THost, typename... TAllowedParts >
-	inline const size_t CompositionMediator<THost, TAllowedParts...>::GetHostOffset() const
+	inline const size_t Composition<THost, TAllowedParts...>::GetHostOffset() const
 	{
 		return (std::ptrdiff_t)AllocationMediator::GetMemory( 0 ) - (std::ptrdiff_t)static_cast<const THost*>( this );
 	}

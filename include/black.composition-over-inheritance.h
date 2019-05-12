@@ -9,8 +9,8 @@ namespace Black
 {
 inline namespace DataOriented
 {
-// `Composition over inheritance` subsystem.
-inline namespace Composition
+// `CompositionOverInheritance over inheritance` subsystem.
+inline namespace CompositionOverInheritance
 {
 // Internal definitions for composition.
 namespace Internal

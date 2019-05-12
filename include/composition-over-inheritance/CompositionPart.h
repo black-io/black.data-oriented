@@ -5,11 +5,11 @@ namespace Black
 {
 inline namespace DataOriented
 {
-inline namespace Composition
+inline namespace CompositionOverInheritance
 {
 	/**
 		@brief	Basic part of composition.
-		The specific parts of real composition do not have to be derived from this base. The composition mediator freely operate with any arbitrary type
+		The specific parts of real composition do not have to be derived from this base. The `Composition` mediator freely operate with any arbitrary type
 		of composition part. But in some cases the composition part is forced to know its host. In such situation the composition part may be based on this type
 		to simplify the access to its host.
 
