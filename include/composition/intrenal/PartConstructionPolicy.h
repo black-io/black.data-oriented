@@ -38,20 +38,6 @@ namespace Internal
 			reinterpret_cast<TComponent*>( memory )->~TComponent();
 		};
 	};
-
-	template< typename THost, typename... TParts >
-	struct PartsDeconstructorList
-	{
-		static constexpr const Black::GlobalFunctionPointer<void, void*> FUNCTIONS[] = {
-			&PartConstructionPolicy<TParts, THost>::Destruct...
-		};
-	};
-
-	template< typename THost, typename... TParts >
-	struct PartsDeconstructorList<THost, Black::TypesCollection<TParts...>> : PartsDeconstructorList<THost, TParts...>
-	{
-
-	};
 }
 }
 }
