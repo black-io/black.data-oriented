@@ -11,7 +11,7 @@ namespace Internal
 {
 	// Trivial memory block.
 	template< size_t BLOCK_SIZE, size_t BLOCK_ALIGNMENT >
-	class alignas( BLOCK_ALIGNMENT ) MemoryBlock : private Black::NonTransferable
+	class alignas( BLOCK_ALIGNMENT ) MemoryBlock
 	{
 		static_assert( BLOCK_SIZE > 0, "The size of memory block should be greater than 0." );
 
