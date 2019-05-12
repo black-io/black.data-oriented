@@ -21,7 +21,7 @@ namespace Internal
 
 
 		// Total number of mapped parts.
-		static constexpr const size_t COMPONENTS_COUNT	= Parts::LENGTH;
+		static constexpr const size_t PARTS_COUNT	= Parts::LENGTH;
 
 		// Total size of memory, which the partition may occupy.
 		static constexpr const size_t SIZE				= TypesCollectionStats<TParts...>::SIZE;

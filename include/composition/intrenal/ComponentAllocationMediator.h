@@ -12,7 +12,7 @@ namespace Internal
 	// Component allocation policy.
 	template< typename TComponentMap >
 	class ComponentAllocationMediator
-		: private AllocationMask<TComponentMap::COMPONENTS_COUNT>
+		: private AllocationMask<TComponentMap::PARTS_COUNT>
 		, private StructuredMemoryBlock<TComponentMap::SIZE, TComponentMap::ALIGNMENT, typename TComponentMap::OffsetCollection>
 	{
 	// Public inner types.
@@ -47,7 +47,7 @@ namespace Internal
 		using Buffer	= StructuredMemoryBlock<TComponentMap::SIZE, TComponentMap::ALIGNMENT, typename TComponentMap::OffsetCollection>;
 
 		// Parent allocation mask.
-		using Bits		= AllocationMask<TComponentMap::COMPONENTS_COUNT>;
+		using Bits		= AllocationMask<TComponentMap::PARTS_COUNT>;
 	};
 }
 }
