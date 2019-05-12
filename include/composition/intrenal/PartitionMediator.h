@@ -13,7 +13,7 @@ namespace Internal
 	template< typename TPartitonMap >
 	class PartitionMediator
 		: private AllocationMask<TPartitonMap::PARTS_COUNT>
-		, private StructuredMemoryBlock<TPartitonMap::SIZE, TPartitonMap::ALIGNMENT, typename TPartitonMap::OffsetCollection>
+		, private PartitionBlock<TPartitonMap::SIZE, TPartitonMap::ALIGNMENT, typename TPartitonMap::OffsetCollection>
 	{
 	// Public interface.
 	public:
@@ -40,7 +40,7 @@ namespace Internal
 	// Private inner types.
 	private:
 		// Parent structured memory buffer.
-		using Partition	= StructuredMemoryBlock<TPartitonMap::SIZE, TPartitonMap::ALIGNMENT, typename TPartitonMap::OffsetCollection>;
+		using Partition	= PartitionBlock<TPartitonMap::SIZE, TPartitonMap::ALIGNMENT, typename TPartitonMap::OffsetCollection>;
 
 		// Parent allocation mask.
 		using Bits		= AllocationMask<TPartitonMap::PARTS_COUNT>;
