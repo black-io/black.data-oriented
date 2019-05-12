@@ -24,10 +24,10 @@ namespace Internal
 		static constexpr const size_t PARTS_COUNT	= Parts::LENGTH;
 
 		// Total size of memory, which the partition may occupy.
-		static constexpr const size_t SIZE				= TypesCollectionStats<TParts...>::SIZE;
+		static constexpr const size_t SIZE			= TypesCollectionStats<TParts...>::SIZE;
 
 		// Alignment of the partition.
-		static constexpr const size_t ALIGNMENT			= TypesCollectionStats<TParts...>::ALIGNMENT;
+		static constexpr const size_t ALIGNMENT		= TypesCollectionStats<TParts...>::ALIGNMENT;
 	};
 }
 }
