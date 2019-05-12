@@ -16,14 +16,17 @@ namespace Internal
 	// Public interface.
 	public:
 		// Get the memory block for given offset index.
-		inline void* GetMemory( const size_t offset_index )				{ return Parent::GetMemory( GetOffset( offset_index ) ); };
+		inline void* GetMemory( const size_t offset_index )					{ return Parent::GetMemory( GetOffset( offset_index ) ); };
 
 		// Get the memory block for given offset index.
-		inline const void* GetMemory( const size_t offset_index ) const	{ return Parent::GetMemory( GetOffset( offset_index ) ); };
+		inline const void* GetMemory( const size_t offset_index ) const		{ return Parent::GetMemory( GetOffset( offset_index ) ); };
+
+		// Get the offset by index.
+		static inline const size_t GetOffset( const size_t offset_index )	{ return TestOffsetIndex( offset_index ), TOffsets::ITEMS[ offset_index ]; };
 
 
 		// Get the number of valid offsets.
-		constexpr const size_t GetOffsetsCount() const					{ return TOffsets::LENGTH; };
+		constexpr const size_t GetOffsetsCount() const						{ return TOffsets::LENGTH; };
 
 	// Private inner types.
 	private:
@@ -32,9 +35,6 @@ namespace Internal
 
 	// Private interface.
 	private:
-		// Get the offset by index.
-		static inline const size_t GetOffset( const size_t offset_index )	{ return TestOffsetIndex( offset_index ), TOffsets::ITEMS[ offset_index ]; };
-
 		// Test the offset index to fit the range of allowed offsets.
 		static inline void TestOffsetIndex( const size_t offset_index )		{ EXPECTS_DEBUG( offset_index < TOffsets::LENGTH ); };
 	};
