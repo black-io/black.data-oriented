@@ -4,4 +4,4 @@
 #include "init.h"
 
 // Library subsystems.
-#include "black.composition.h"
+#include "black.composition-over-inheritance.h"
