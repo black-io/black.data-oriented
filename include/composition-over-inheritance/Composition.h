@@ -91,7 +91,6 @@ inline namespace CompositionOverInheritance
 		template< typename TPart >
 		using ConstructionPolicy	= Internal::PartConstructionPolicy<TPart, THost>;
 
-
 		// Part mapping.
 		using PartitionMap			= Internal::PartitionMap<TAllowedParts...>;
 
