@@ -13,6 +13,7 @@ inline namespace TypeUtils
 	{
 		static_assert( Black::IS_INTEGER<TNumberType>, "The type of numbers should be integral." );
 
+
 		// Add portion to each number.
 		template< TNumberType PORTION >
 		using IncreaseEach			= NumericCollection<TNumberType, ( NUMBERS + PORTION )...>;
