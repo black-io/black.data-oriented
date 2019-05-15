@@ -14,11 +14,27 @@ inline namespace TypeUtils
 		// Collection, where all inner collections are unfolded.
 		using UnfoldedCollection	= typename Internal::TypesCollectionUnfoldHelper<TypesCollection<TTypes...>>::Collection;
 
+		// Merge some types into head of collection.
+		template< typename... TOtherTypes >
+		using MergeHeadTypes		= TypesCollection<TOtherTypes..., TTypes...>;
+
+		// Merge some types into tail of collection.
+		template< typename... TOtherTypes >
+		using MergeTailTypes		= TypesCollection<TTypes..., TOtherTypes...>;
+
+		// Merge some types into head of collection.
+		template< typename TCollection >
+		using MergeHeadCollection	= typename TCollection::template MergeTailTypes<TTypes...>;
+
+		// Merge some types into tail of collection.
+		template< typename TCollection >
+		using MergeTailCollection	= typename TCollection::template MergeHeadTypes<TTypes...>;
+
 		// Get the indices of types in other collection.
 		// @FIXME: MSVS2015 crushes compilation while parsing the `NumericCollection<size_t, TOtherCollection::INDEX_OF<TTypes>...>`.
 		// @TODO: Get rid of `TypesCollectionIndexHelper` once the MSVS2015 support is dropped.
 		template< typename TOtherCollection >
-		using IndexedProjection		= NumericCollection< size_t, Internal::TypesCollectionIndexHelper<0, TTypes, TOtherCollection>::RESULT...>;
+		using IndexedProjection		= NumericCollection<size_t, Internal::TypesCollectionIndexHelper<0, TTypes, TOtherCollection>::RESULT...>;
 
 
 		// Length of collection.
