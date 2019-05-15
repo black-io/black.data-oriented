@@ -123,6 +123,47 @@ namespace Internal
 		// Merged numbers.
 		using Collection = NumericCollection<NUMBERS...>;
 	};
+
+	template< typename TCollection, size_t BASE_INDEX, typename... TTypes >
+	struct PartIntersectionHelper;
+
+	template< typename TCollection, size_t BASE_INDEX, typename THead, typename... TRest >
+	struct PartIntersectionHelper<TCollection, BASE_INDEX, THead, TRest...>
+	{
+
+	};
+
+	template< typename TCollection, size_t BASE_INDEX, typename... TInnerTypes, typename... TRest >
+	struct PartIntersectionHelper<TCollection, BASE_INDEX, Black::TypesCollection<TInnerTypes...>, TRest...>
+	{
+
+	};
+
+	template< typename TCollection, size_t BASE_INDEX, typename... TInnerTypes, typename... TRest >
+	struct PartIntersectionHelper<TCollection, BASE_INDEX, Black::TypesUnion<TInnerTypes...>, TRest...>
+	{
+
+	};
+
+	template< typename TCollection, size_t BASE_INDEX, typename... TInnerTypes >
+	struct PartIntersectionHelper<TCollection, BASE_INDEX, Black::TypesCollection<TInnerTypes...>>
+	{
+
+	};
+
+	template< typename TCollection, size_t BASE_INDEX, typename... TInnerTypes >
+	struct PartIntersectionHelper<TCollection, BASE_INDEX, Black::TypesUnion<TInnerTypes...>>
+	{
+
+	};
+
+	template< typename TCollection, size_t BASE_INDEX, typename TLast >
+	struct PartIntersectionHelper<TCollection, BASE_INDEX, TLast>
+	{
+		using LocalIndices	= typename Black::TypesCollection<TLast>::template IndexedProjection<TCollection>;
+
+		using Indices		= Black::TypesCollection<typename LocalIndices::IncreaseEach<BASE_INDEX>>;
+	};
 }
 }
 }
