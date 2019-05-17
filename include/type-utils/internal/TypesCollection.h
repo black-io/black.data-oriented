@@ -81,6 +81,42 @@ namespace Internal
 		// Unfolded collection.
 		using Collection = TypesCollection<TUnfoldedTypes...>;
 	};
+
+	// Helper class to merge two collections.
+	template< typename TLeftColection, typename TRightCollection >
+	struct TypesCollectionMergeHelper;
+
+	// Terminal branch. Merge the collections.
+	template< typename... TLeftTypes, typename... TRightTypes >
+	struct TypesCollectionMergeHelper<Black::TypesCollection<TLeftTypes...>, Black::TypesCollection<TRightTypes...>> final
+	{
+		// The merged collection.
+		using Collection = Black::TypesCollection<TLeftTypes..., TRightTypes...>;
+	};
+
+	// Helper class to repeat the types in collection given number of times.
+	template< size_t REPEAT_COUNT, typename... TTypes >
+	struct TypesCollectionRepeatHelper final
+	{
+		static_assert( REPEAT_COUNT != Black::UNDEFINED_INDEX, "The number of collection repeats is invalid." );
+
+		// Current repeat.
+		using HeadCollection	= Black::TypesCollection<TTypes...>;
+
+		// The tail of all repeats.
+		using RestHelper		= TypesCollectionRepeatHelper<REPEAT_COUNT - 1, TTypes...>
+
+		// The result collection.
+		using Collection		= typename TypesCollectionMergeHelper<CurrentHead, typename RestHelper::Collection>::Collection;
+	};
+
+	// Terminal branch. The last repeat.
+	template< typename... TTypes >
+	struct TypesCollectionRepeatHelper<0, TTypes...> final
+	{
+		// The result collection.
+		using Collection		= Black::TypesCollection<TTypes...>;
+	};
 }
 }
 }
