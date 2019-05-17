@@ -31,8 +31,8 @@ inline namespace TypeUtils
 		using MergeTailCollection	= typename TCollection::template MergeHeadTypes<TTypes...>;
 
 		// Produce the collection by repeating the types with given number of times.
-		template< size_t >
-		using Repeat				= TypesCollection<>;
+		template< size_t REPEAT_COUNT >
+		using Repeat				= typename Internal::TypesCollectionRepeatHelper<REPEAT_COUNT - 1, TTypes...>::Collection;
 
 		// Get the indices of types in other collection.
 		// @FIXME: MSVS2015 crushes compilation while parsing the `NumericCollection<size_t, TOtherCollection::INDEX_OF<TTypes>...>`.
