@@ -104,10 +104,10 @@ namespace Internal
 		using HeadCollection	= Black::TypesCollection<TTypes...>;
 
 		// The tail of all repeats.
-		using RestHelper		= TypesCollectionRepeatHelper<REPEAT_COUNT - 1, TTypes...>
+		using RestHelper		= TypesCollectionRepeatHelper<REPEAT_COUNT - 1, TTypes...>;
 
 		// The result collection.
-		using Collection		= typename TypesCollectionMergeHelper<CurrentHead, typename RestHelper::Collection>::Collection;
+		using Collection		= typename TypesCollectionMergeHelper<HeadCollection, typename RestHelper::Collection>::Collection;
 	};
 
 	// Terminal branch. The last repeat.
@@ -116,6 +116,46 @@ namespace Internal
 	{
 		// The result collection.
 		using Collection		= Black::TypesCollection<TTypes...>;
+	};
+
+	// Type isolation wrap.
+	template< typename TContent >
+	struct TypeWrap final
+	{
+		// Content of wrap.
+		using Content = TContent;
+	};
+
+	// @FIXME: MSVS2015 can't compile `decltype` constructions in parameter pack or with nested types.
+	// @TODO: Get rid of this type once the MSVS2015 support is dropped.
+	template< size_t >
+	struct VoidWrap
+	{
+		using Content = void*;
+	};
+
+	// Helper class to extract N-th type from collection.
+	template< size_t TYPE_INDEX, typename = std::make_index_sequence<TYPE_INDEX> >
+	struct TypesCollectionSelectionHelper;
+
+	// Terminal branch. Implement the type selection function.
+	template< size_t TYPE_INDEX, size_t... INDICES >
+	struct TypesCollectionSelectionHelper<TYPE_INDEX, std::index_sequence<INDICES...>> final
+	{
+		// The function will deduce the type of N-th argument in types collection.
+		template< typename TResult >
+		static inline TResult Select( typename VoidWrap<INDICES>::Content..., TResult*, ... );
+	};
+
+	// Helper class to access the type at index of types collection.
+	template< size_t TYPE_INDEX, typename... TTypes >
+	struct TypesCollectionAccessHelper final
+	{
+		// @FIXME: MSVS2015 can't compile the `typename decltype(...)::InnerType` construction.
+		using Wrap	= decltype( TypesCollectionSelectionHelper<TYPE_INDEX>::template Select( &std::declval<TypeWrap<TTypes>>()... ) );
+
+		// The type at index.
+		using Result = typename Wrap::Content;
 	};
 }
 }
