@@ -124,45 +124,47 @@ namespace Internal
 		using Collection = NumericCollection<NUMBERS...>;
 	};
 
-	template< typename TCollection, size_t BASE_INDEX, typename... TTypes >
+	template< typename TCollection, typename... TTypes >
 	struct PartIntersectionHelper;
 
-	template< typename TCollection, size_t BASE_INDEX, typename THead, typename... TRest >
-	struct PartIntersectionHelper<TCollection, BASE_INDEX, THead, TRest...>
+	// Deduction branch. Keep merging the indices.
+	template< typename TCollection, typename THead, typename... TRest >
+	struct PartIntersectionHelper<TCollection, THead, TRest...>
+	{
+		// Indexed projection for current type.
+		using HeadIndices	= typename PartIntersectionHelper<TCollection, THead>::Indices;
+
+		// Merged collection of indexed projections.
+		using Indices		= typename HeadIndices::template MergeTailCollection<typename PartIntersectionHelper<TCollection, TRest...>::Indices>;
+	};
+
+	// Terminal branch. Deducting the indexed projection for collection of types.
+	template< typename TCollection, typename... TInnerTypes >
+	struct PartIntersectionHelper<TCollection, Black::TypesCollection<TInnerTypes...>> : PartIntersectionHelper<TCollection, TInnerTypes...>
 	{
 
 	};
 
-	template< typename TCollection, size_t BASE_INDEX, typename... TInnerTypes, typename... TRest >
-	struct PartIntersectionHelper<TCollection, BASE_INDEX, Black::TypesCollection<TInnerTypes...>, TRest...>
+	// Terminal branch. Deducting the indexed projection for union of types.
+	template< typename TCollection, typename... TInnerTypes >
+	struct PartIntersectionHelper<TCollection, Black::TypesUnion<TInnerTypes...>>
 	{
+		// Unfolded union to get the projection of all collected types.
+		using UnfoldedUnion	= typename Black::TypesUnion<TInnerTypes...>::UnfoldedCollection;
 
+		// Indexed projection for single type, it consists of indices for all collected types.
+		using LocalIndices	= typename UnfoldedUnion::template IndexedProjection<TCollection>;
+
+		// Each of collected type in union represent the same indexed projection.
+		using Indices		= typename Black::TypesCollection<LocalIndices>::template Repeat<UnfoldedUnion::LENGTH>;
 	};
 
-	template< typename TCollection, size_t BASE_INDEX, typename... TInnerTypes, typename... TRest >
-	struct PartIntersectionHelper<TCollection, BASE_INDEX, Black::TypesUnion<TInnerTypes...>, TRest...>
+	// Terminal branch. The last type found for indexing.
+	template< typename TCollection, typename TLast >
+	struct PartIntersectionHelper<TCollection, TLast>
 	{
-
-	};
-
-	template< typename TCollection, size_t BASE_INDEX, typename... TInnerTypes >
-	struct PartIntersectionHelper<TCollection, BASE_INDEX, Black::TypesCollection<TInnerTypes...>>
-	{
-
-	};
-
-	template< typename TCollection, size_t BASE_INDEX, typename... TInnerTypes >
-	struct PartIntersectionHelper<TCollection, BASE_INDEX, Black::TypesUnion<TInnerTypes...>>
-	{
-
-	};
-
-	template< typename TCollection, size_t BASE_INDEX, typename TLast >
-	struct PartIntersectionHelper<TCollection, BASE_INDEX, TLast>
-	{
-		using LocalIndices	= typename Black::TypesCollection<TLast>::template IndexedProjection<TCollection>;
-
-		using Indices		= Black::TypesCollection<typename LocalIndices::IncreaseEach<BASE_INDEX>>;
+		// Collection of projected index.
+		using Indices = Black::TypesCollection<typename Black::TypesCollection<TLast>::template IndexedProjection<TCollection>>;
 	};
 }
 }
