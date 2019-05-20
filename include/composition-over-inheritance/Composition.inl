@@ -102,7 +102,15 @@ inline namespace CompositionOverInheritance
 	template< typename TPart >
 	inline const bool Composition<THost, TAllowedParts...>::CanConstructPart() const
 	{
-		return true;
+		using Indices = typename PartIntersectionIndices::template TypeAt<GetPartIndex<TPart>()>;
+		return std::none_of(
+			std::cbegin( Indices::ITEMS ),
+			std::cend( Indices::ITEMS ),
+			[this]( const size_t part_index ) -> bool
+			{
+				return AllocationMediator::IsAllocated( part_index );
+			}
+		);
 	}
 
 	template< typename THost, typename... TAllowedParts >
@@ -119,8 +127,8 @@ inline namespace CompositionOverInheritance
 		const size_t part_indices[] = { GetPartIndex<TParts>()... };
 
 		return std::any_of(
-			std::begin( part_indices ),
-			std::end( part_indices ),
+			std::cbegin( part_indices ),
+			std::cend( part_indices ),
 			[this]( const size_t part_index ) -> bool
 			{
 				return AllocationMediator::IsAllocated( part_index );
@@ -135,8 +143,8 @@ inline namespace CompositionOverInheritance
 		const size_t part_indices[] = { GetPartIndex<TParts>()... };
 
 		return std::all_of(
-			std::begin( part_indices ),
-			std::end( part_indices ),
+			std::cbegin( part_indices ),
+			std::cend( part_indices ),
 			[this]( const size_t part_index ) -> bool
 			{
 				return AllocationMediator::IsAllocated( part_index );

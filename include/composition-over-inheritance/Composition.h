@@ -89,16 +89,19 @@ inline namespace CompositionOverInheritance
 	private:
 		// Construction policy template.
 		template< typename TPart >
-		using ConstructionPolicy	= Internal::PartConstructionPolicy<TPart, THost>;
+		using ConstructionPolicy		= Internal::PartConstructionPolicy<TPart, THost>;
 
 		// Part mapping.
-		using PartitionMap			= Internal::PartitionMap<TAllowedParts...>;
+		using PartitionMap				= Internal::PartitionMap<TAllowedParts...>;
 
 		// Allocation mediator type.
-		using AllocationMediator	= Internal::PartitionMediator<PartitionMap>;
+		using AllocationMediator		= Internal::PartitionMediator<PartitionMap>;
 
 		// List of used components.
-		using Parts					= typename PartitionMap::Parts;
+		using Parts						= typename PartitionMap::Parts;
+
+		// Collection of part intersection indices.
+		using PartIntersectionIndices	= typename Internal::PartIntersectionHelper<Parts, TAllowedParts...>::Indices;
 
 	// Private interface.
 	private:
