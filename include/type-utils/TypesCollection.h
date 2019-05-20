@@ -40,6 +40,10 @@ inline namespace TypeUtils
 		template< typename TOtherCollection >
 		using IndexedProjection		= NumericCollection<size_t, Internal::TypesCollectionIndexHelper<0, TTypes, TOtherCollection>::RESULT...>;
 
+		// Get the type with given index.
+		template< size_t INDEX >
+		using TypeAt				= typename Internal::TypesCollectionAccessHelper<INDEX, TTypes...>::Result;
+
 
 		// Length of collection.
 		static constexpr const size_t LENGTH	= sizeof...( TTypes );
