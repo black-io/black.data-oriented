@@ -152,7 +152,7 @@ namespace Internal
 	struct TypesCollectionAccessHelper final
 	{
 		// @FIXME: MSVS2015 can't compile the `typename decltype(...)::InnerType` construction.
-		using Wrap	= decltype( TypesCollectionSelectionHelper<TYPE_INDEX>::template Select( &std::declval<TypeWrap<TTypes>>()... ) );
+		using Wrap	= decltype( TypesCollectionSelectionHelper<TYPE_INDEX>::template Select( static_cast<TypeWrap<TTypes>*>(0)... ) );
 
 		// The type at index.
 		using Result = typename Wrap::Content;
