@@ -40,16 +40,16 @@ inline namespace TypeUtils
 
 
 		// Length of collection.
-		static constexpr const TNumberType LENGTH	= sizeof...( NUMBERS );
+		static constexpr const TNumberType LENGTH						= sizeof...( NUMBERS );
 
 		// Collection representation.
-		static constexpr const TNumberType ITEMS[]	= { NUMBERS... };
+		static constexpr const TNumberType ITEMS[ sizeof...(NUMBERS) ]	= { NUMBERS... };
 
 		// Minimum of collection.
-		static constexpr const TNumberType MINIMUM	= Internal::NumericCollectionMinimum<TNumberType, NUMBERS...>::RESULT;
+		static constexpr const TNumberType MINIMUM						= Internal::NumericCollectionMinimum<TNumberType, NUMBERS...>::RESULT;
 
 		// Maximum of collection.
-		static constexpr const TNumberType MAXIMUM	= Internal::NumericCollectionMaximum<TNumberType, NUMBERS...>::RESULT;
+		static constexpr const TNumberType MAXIMUM						= Internal::NumericCollectionMaximum<TNumberType, NUMBERS...>::RESULT;
 	};
 
 	template< typename TNumberType, TNumberType... NUMBERS >
