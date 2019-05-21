@@ -93,7 +93,7 @@ namespace Internal
 		using OffsetInfo	= TypeOffset<TLast, BASE_OFFSET>;
 
 		// Collection offsets.
-		using Offsets		= typename NumericCollection<OffsetInfo::OFFSET>;
+		using Offsets		= NumericCollection<OffsetInfo::OFFSET>;
 	};
 }
 }
