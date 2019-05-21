@@ -51,6 +51,9 @@ inline namespace TypeUtils
 		// Maximum of collection.
 		static constexpr const TNumberType MAXIMUM	= Internal::NumericCollectionMaximum<TNumberType, NUMBERS...>::RESULT;
 	};
+
+	template< typename TNumberType, TNumberType... NUMBERS >
+	constexpr const TNumberType NumericCollection<TNumberType, NUMBERS...>::ITEMS[ sizeof...(NUMBERS) ];
 }
 }
 }
