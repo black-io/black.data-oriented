@@ -109,15 +109,8 @@ inline namespace CompositionOverInheritance
 		template< typename TPart >
 		static constexpr const size_t GetPartIndex()
 		{
-			// @FIXME: MSVS2015 can't compile `Parts::template IS_EXIST<TPart>`.
-			// @TODO: Get rid of this stuff ASAP once the MSVS2015 support is dropped.
-			#if( BLACK_WINDOWS_DESKTOP_PLATFORM || BLACK_WINDOWS_MOBILE_PLATFORM )
-			static_assert( Parts::IS_EXIST<TPart>, "Invalid type of composition part." );
-			return Parts::INDEX_OF<TPart>;
-			#else
 			static_assert( Parts::template IS_EXIST<TPart>, "Invalid type of composition part." );
 			return Parts::template INDEX_OF<TPart>;
-			#endif
 		}
 
 		// Get the offset from host base to the base of composition mediator.
