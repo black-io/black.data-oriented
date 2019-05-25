@@ -126,14 +126,6 @@ namespace Internal
 		using Content = TContent;
 	};
 
-	// @FIXME: MSVS2015 can't compile `decltype` constructions in parameter pack or with nested types.
-	// @TODO: Get rid of this type once the MSVS2015 support is dropped.
-	template< size_t >
-	struct VoidWrap
-	{
-		using Content = void*;
-	};
-
 	// Helper class to extract N-th type from collection.
 	template< size_t TYPE_INDEX, typename = std::make_index_sequence<TYPE_INDEX> >
 	struct TypesCollectionSelectionHelper;
@@ -144,18 +136,15 @@ namespace Internal
 	{
 		// The function will deduce the type of N-th argument in types collection.
 		template< typename TResult >
-		static inline TResult Select( typename VoidWrap<INDICES>::Content..., TResult*, ... );
+		static inline TResult Select( decltype( (void*)INDICES )..., TResult*, ... );
 	};
 
 	// Helper class to access the type at index of types collection.
 	template< size_t TYPE_INDEX, typename... TTypes >
 	struct TypesCollectionAccessHelper final
 	{
-		// @FIXME: MSVS2015 can't compile the `typename decltype(...)::InnerType` construction.
-		using Wrap	= decltype( TypesCollectionSelectionHelper<TYPE_INDEX>::template Select( static_cast<TypeWrap<TTypes>*>(0)... ) );
-
 		// The type at index.
-		using Result = typename Wrap::Content;
+		using Result = typename decltype( TypesCollectionSelectionHelper<TYPE_INDEX>::template Select( static_cast<TypeWrap<TTypes>*>(0)... ) )::Content;
 	};
 }
 }
