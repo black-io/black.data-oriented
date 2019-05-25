@@ -35,10 +35,8 @@ inline namespace TypeUtils
 		using Repeat				= typename Internal::TypesCollectionRepeatHelper<REPEAT_COUNT - 1, TTypes...>::Collection;
 
 		// Get the indices of types in other collection.
-		// @FIXME: MSVS2015 crushes compilation while parsing the `NumericCollection<size_t, TOtherCollection::INDEX_OF<TTypes>...>`.
-		// @TODO: Get rid of `TypesCollectionIndexHelper` once the MSVS2015 support is dropped.
 		template< typename TOtherCollection >
-		using IndexedProjection		= NumericCollection<size_t, Internal::TypesCollectionIndexHelper<0, TTypes, TOtherCollection>::RESULT...>;
+		using IndexedProjection		= NumericCollection<size_t, TOtherCollection::template INDEX_OF<TTypes>...>;
 
 		// Get the type with given index.
 		template< size_t INDEX >
