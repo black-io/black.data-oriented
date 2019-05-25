@@ -15,10 +15,8 @@ inline namespace TypeUtils
 		using UnfoldedCollection	= typename Internal::TypesCollectionUnfoldHelper<TypesCollection<TTypes...>>::Collection;
 
 		// Get the indices of types in other collection.
-		// @FIXME: MSVS2015 crushes compilation while parsing the `NumericCollection<size_t, TOtherCollection::INDEX_OF<TTypes>...>`.
-		// @TODO: Get rid of `TypesCollectionIndexHelper` once the MSVS2015 support is dropped.
 		template< typename TOtherCollection >
-		using IndexedProjection		= NumericCollection<size_t, Internal::TypesCollectionIndexHelper<0, TTypes, TOtherCollection>::RESULT...>;
+		using IndexedProjection		= NumericCollection<size_t, TOtherCollection::template INDEX_OF<TTypes>...>;
 
 
 		// Length of collection.
