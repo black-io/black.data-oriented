@@ -23,7 +23,7 @@ inline namespace CompositionOverInheritance
 	template< typename TPart >
 	inline TPart& Composition<THost, TAllowedParts...>::ConstructPart()
 	{
-		const size_t part_index = GetPartIndex<TPart>();
+		constexpr size_t part_index = GetPartIndex<TPart>();
 		void* part_memory = AllocationMediator::GetMemory( part_index );
 		CRET( AllocationMediator::IsAllocated( part_index ), *reinterpret_cast<TPart*>( part_memory ) );
 
@@ -35,7 +35,7 @@ inline namespace CompositionOverInheritance
 	template< typename TPart >
 	inline void Composition<THost, TAllowedParts...>::DestructPart()
 	{
-		const size_t part_index = GetPartIndex<TPart>();
+		constexpr size_t part_index = GetPartIndex<TPart>();
 
 		CRET( !AllocationMediator::IsAllocated( part_index ) );
 		void* part_memory = AllocationMediator::GetMemory( part_index );
@@ -82,7 +82,7 @@ inline namespace CompositionOverInheritance
 	template< typename TPart >
 	inline TPart* Composition<THost, TAllowedParts...>::QueryPart()
 	{
-		const size_t part_index = GetPartIndex<TPart>();
+		constexpr size_t part_index = GetPartIndex<TPart>();
 
 		CRET( !AllocationMediator::IsAllocated( part_index ), nullptr );
 		return reinterpret_cast<TPart*>( AllocationMediator::GetMemory( part_index ) );
@@ -92,7 +92,7 @@ inline namespace CompositionOverInheritance
 	template< typename TPart >
 	inline const TPart* Composition<THost, TAllowedParts...>::QueryPart() const
 	{
-		const size_t part_index = GetPartIndex<TPart>();
+		constexpr size_t part_index = GetPartIndex<TPart>();
 
 		CRET( !AllocationMediator::IsAllocated( part_index ), nullptr );
 		return reinterpret_cast<const TPart*>( AllocationMediator::GetMemory( part_index ) );
