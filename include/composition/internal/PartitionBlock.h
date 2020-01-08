@@ -5,13 +5,13 @@ namespace Black
 {
 inline namespace DataOriented
 {
-inline namespace CompositionOverInheritance
+inline namespace Composition
 {
 namespace Internal
 {
 	// Block of structured memory.
 	template< size_t BLOCK_SIZE, size_t BLOCK_ALIGNMENT, typename TOffsets >
-	class PartitionBlock : private MemoryBlock<BLOCK_SIZE, BLOCK_ALIGNMENT>
+	class PartitionBlock : private Black::RawMemoryBlock<BLOCK_SIZE, BLOCK_ALIGNMENT>
 	{
 	// Public interface.
 	public:
@@ -32,7 +32,7 @@ namespace Internal
 	// Private inner types.
 	private:
 		// Type of parent memory block.
-		using Parent = MemoryBlock<BLOCK_SIZE, BLOCK_ALIGNMENT>;
+		using Parent = Black::RawMemoryBlock<BLOCK_SIZE, BLOCK_ALIGNMENT>;
 
 	// Private interface.
 	private:
