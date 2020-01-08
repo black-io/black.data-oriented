@@ -1,7 +1,8 @@
 #pragma once
 
+
 // Library initialization header.
-#include "init.h"
+#include "core/init.h"
 
 // Library subsystems.
-#include "black.composition-over-inheritance.h"
+#include "black.composition.h"
