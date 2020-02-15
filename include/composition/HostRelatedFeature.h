@@ -8,13 +8,12 @@ inline namespace DataOriented
 inline namespace Composition
 {
 	/**
-		@brief	Basic part of composition.
-		The specific parts of real composition do not have to be derived from this base. The `Composition` mediator freely operate with any arbitrary type
-		of composition part. But in some cases the composition part is forced to know its host. In such situation the composition part may be based on this type
-		to simplify the access to its host.
+		@brief	Base type for feature with relation to host.
+		It's not necessary to derive all features from this type. In general, the `Composition` mediator freely operate with any arbitrary type of composition feature.
+		But if one feature requires the access to it's host, it may be based on this type to simplify the access to it's host.
 
-		The `GetHost()` member-function is implemented in such way the constant host will be accessed from constant part and the mutable host may be accessed
-		from mutable part.
+		The `GetHost()` member-function is implemented in such way the immutable host will be accessed from immutable feature and the mutable host may be accessed
+		from mutable feature.
 
 		The basic part of composition is non-transferable object, which can't be moved or copied. The restriction is implemented due to nature of composition.
 		The memory for composition parts is placed just inside of host, so the parts may be only created and destroyed while the host lifetime.
@@ -29,30 +28,30 @@ inline namespace Composition
 		@tparam	THost	The type of host for specific composition part.
 	*/
 	template< typename THost >
-	class CompositionPart : private Black::NonTransferable
+	class HostRelatedFeature : private Black::NonTransferable
 	{
 	// Construction.
 	public:
-		CompositionPart()	= delete;
-		CompositionPart( const size_t host_offset ) : m_host_offset{ host_offset } {};
+		HostRelatedFeature()	= delete;
+		HostRelatedFeature( const size_t host_offset ) : m_host_offset{ host_offset } {};
 
-		~CompositionPart()	= default;
+		~HostRelatedFeature()	= default;
 
 	// Heirs interface.
 	protected:
 		// Get the host object.
-		inline THost& GetHost()					{ return *reinterpret_cast<THost*>( GetMemory() - m_host_offset ); };
+		inline THost& GetHost()							{ return *reinterpret_cast<THost*>( GetMemory() - m_host_offset ); };
 
 		// Get the host object.
-		inline const THost& GetHost() const		{ return *reinterpret_cast<const THost*>( GetMemory() - m_host_offset ); };
+		inline const THost& GetHost() const				{ return *reinterpret_cast<const THost*>( GetMemory() - m_host_offset ); };
 
 	// Private interface.
 	private:
 		// Get the raw memory from this object.
-		inline uint8_t* GetMemory()				{ return reinterpret_cast<uint8_t*>( this ); };
+		inline uint8_t* const GetMemory()				{ return reinterpret_cast<uint8_t*>( this ); };
 
 		// Get the raw memory from this object.
-		inline const uint8_t* GetMemory() const	{ return reinterpret_cast<const uint8_t*>( this ); };
+		inline const uint8_t* const GetMemory() const	{ return reinterpret_cast<const uint8_t*>( this ); };
 
 	// Private state.
 	private:

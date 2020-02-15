@@ -35,10 +35,10 @@ namespace Internal
 #include "composition/internal/PartitionMap.h"
 
 // Implementation of composition mediator.
-#include "composition/CompositionPart.h"
+#include "composition/HostRelatedFeature.h"
 #include "composition/internal/PartConstructionPolicy.h"
 #include "composition/internal/PartDestructorList.h"
-#include "composition/Composition.h"
+#include "composition/FeatureComposition.h"
 
 // Deferred implementations.
-#include "composition/Composition.inl"
+#include "composition/FeatureComposition.inl"
