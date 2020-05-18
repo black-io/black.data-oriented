@@ -4,8 +4,6 @@ __include__:
   - '../properties.windows.black-settings'
 
 component:
-  name: 'black.data-oriented'
-  guid: 'B58D0C1F-5354-47AA-A441-359B5C68BAA7'
   path: '{current-folder-path}'
   type: 'static-library'
 
