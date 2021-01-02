@@ -57,10 +57,10 @@ namespace Internal
 	struct TypeOffset final
 	{
 		// Offset for entity of given type.
-		static constexpr const size_t OFFSET		= Black::GetAlignedSize( BASE_OFFSET, TypeStats<TType>::ALIGNMENT );
+		static inline constexpr const size_t OFFSET			= Black::GetAlignedSize( BASE_OFFSET, TypeStats<TType>::ALIGNMENT );
 
 		// Offset for next entity.
-		static constexpr const size_t NEXT_OFFSET	= OFFSET + TypeStats<TType>::SIZE;
+		static inline constexpr const size_t NEXT_OFFSET	= OFFSET + TypeStats<TType>::SIZE;
 	};
 
 	// Helper to build the size of type collections.
@@ -79,7 +79,7 @@ namespace Internal
 	struct CollectionSizeHelper<BASE_OFFSET, THead>
 	{
 		// Calculated size of collection.
-		static constexpr const size_t RESULT = TypeOffset<THead, BASE_OFFSET>::NEXT_OFFSET;
+		static inline constexpr const size_t RESULT = TypeOffset<THead, BASE_OFFSET>::NEXT_OFFSET;
 	};
 
 	// Statistics for collection of types.
@@ -87,10 +87,10 @@ namespace Internal
 	struct TypesCollectionStats
 	{
 		// Total size of collection.
-		static constexpr const size_t SIZE		= CollectionSizeHelper<0, TTypes...>::RESULT;
+		static inline constexpr const size_t SIZE		= CollectionSizeHelper<0, TTypes...>::RESULT;
 
 		// Alignment of collection.
-		static constexpr const size_t ALIGNMENT	= NumericCollection<TypeStats<TTypes>::ALIGNMENT...>::MAXIMUM;
+		static inline constexpr const size_t ALIGNMENT	= NumericCollection<TypeStats<TTypes>::ALIGNMENT...>::MAXIMUM;
 	};
 
 	// Statistics for union of types.
@@ -98,10 +98,10 @@ namespace Internal
 	struct TypesUnionStats
 	{
 		// Size of union.
-		static constexpr const size_t SIZE		= NumericCollection<TypeStats<TTypes>::SIZE...>::MAXIMUM;
+		static inline constexpr const size_t SIZE		= NumericCollection<TypeStats<TTypes>::SIZE...>::MAXIMUM;
 
 		// Alignment of union.
-		static constexpr const size_t ALIGNMENT	= NumericCollection<TypeStats<TTypes>::ALIGNMENT...>::MAXIMUM;
+		static inline constexpr const size_t ALIGNMENT	= NumericCollection<TypeStats<TTypes>::ALIGNMENT...>::MAXIMUM;
 	};
 
 	// Helper to merge the numeric collections.
