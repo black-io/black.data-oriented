@@ -42,16 +42,16 @@ inline namespace Types
 
 
 		// Length of collection.
-		static inline const TNumberType LENGTH		= sizeof...( NUMBERS );
+		static inline constexpr TNumberType LENGTH		= sizeof...( NUMBERS );
 
 		// Collection representation.
-		static inline const TNumberType ITEMS[]		= { NUMBERS... };
+		static inline constexpr TNumberType ITEMS[]		= { NUMBERS... };
 
 		// Minimum of collection.
-		static inline const TNumberType MINIMUM		= std::min( { NUMBERS... } );
+		static inline constexpr TNumberType MINIMUM		= std::min( { NUMBERS... } );
 
 		// Maximum of collection.
-		static inline const TNumberType MAXIMUM		= std::max( { NUMBERS... } );
+		static inline constexpr TNumberType MAXIMUM		= std::max( { NUMBERS... } );
 	};
 }
 }
