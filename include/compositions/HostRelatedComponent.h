@@ -8,18 +8,20 @@ inline namespace DataOriented
 inline namespace Composition
 {
 	/**
-		@brief	Base type for feature with relation to host.
-		It's not necessary to derive all features from this type. In general, the `Composition` mediator freely operate with any arbitrary type of composition feature.
-		But if one feature requires the access to it's host, it may be based on this type to simplify the access to it's host.
+		@brief	Base type for component with relation to host.
+		@note	This type of component is part only of Black::Composition.
 
-		The `GetHost()` member-function is implemented in such way the immutable host will be accessed from immutable feature and the mutable host may be accessed
-		from mutable feature.
+		It's not necessary to derive all components from this type. In general, the `Composition` mediator freely operate with any arbitrary type of component.
+		But if one component requires the access to it's host, it may be based on this type to simplify such access.
+
+		The `GetHost()` member-function is implemented in such way the immutable host will be accessed from immutable component and the mutable host may be accessed
+		from mutable component.
 
 		The basic part of composition is non-transferable object, which can't be moved or copied. The restriction is implemented due to nature of composition.
 		The memory for composition parts is placed just inside of host, so the parts may be only created and destroyed while the host lifetime.
 		Additionally, imaging the composition part is transferable, the huge mess may happen once the part is moved outside of host and
 		requires the instance of host. The result may vary in wide range of failures. And the most dramatic is the result when the code will not fail immediately,
-		but the memory will be corrupted.
+		but the some memory will be corrupted.
 		So, the user shell never consider the composition parts to be transferable in memory.
 
 		And one more thing. It's strongly recommended to make the private inheritance from instantiations of this template.
@@ -28,14 +30,14 @@ inline namespace Composition
 		@tparam	THost	The type of host for specific composition part.
 	*/
 	template< typename THost >
-	class HostRelatedFeature : private Black::NonTransferable
+	class HostRelatedComponent : private Black::NonTransferable
 	{
 	// Construction.
 	public:
-		HostRelatedFeature()	= delete;
-		HostRelatedFeature( const size_t host_offset ) : m_host_offset{ host_offset } {};
+		HostRelatedComponent()	= delete;
+		HostRelatedComponent( const size_t host_offset ) : m_host_offset{ host_offset } {};
 
-		~HostRelatedFeature()	= default;
+		~HostRelatedComponent()	= default;
 
 	// Heirs interface.
 	protected:
