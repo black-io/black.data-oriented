@@ -5,7 +5,7 @@ namespace Black
 {
 inline namespace DataOriented
 {
-inline namespace Composition
+inline namespace Compositions
 {
 	/**
 		@brief	Base type for component with relation to host.
