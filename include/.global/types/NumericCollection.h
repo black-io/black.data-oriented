@@ -5,13 +5,15 @@ namespace Black
 {
 inline namespace DataOriented
 {
-inline namespace TypeUtils
+inline namespace Global
+{
+inline namespace Types
 {
 	// Trivial numeric collection.
 	template< typename TNumberType, TNumberType... NUMBERS >
 	struct NumericCollection final
 	{
-		static_assert( Black::IS_INTEGER<TNumberType>, "The type of numbers should be integral." );
+		static_assert( std::is_integral_v<TNumberType>, "The type of numbers should be integral." );
 
 
 		// Add portion to each number.
@@ -40,20 +42,18 @@ inline namespace TypeUtils
 
 
 		// Length of collection.
-		static constexpr const TNumberType LENGTH						= sizeof...( NUMBERS );
+		static inline const TNumberType LENGTH		= sizeof...( NUMBERS );
 
 		// Collection representation.
-		static constexpr const TNumberType ITEMS[ sizeof...(NUMBERS) ]	= { NUMBERS... };
+		static inline const TNumberType ITEMS[]		= { NUMBERS... };
 
 		// Minimum of collection.
-		static constexpr const TNumberType MINIMUM						= Internal::NumericCollectionMinimum<TNumberType, NUMBERS...>::RESULT;
+		static inline const TNumberType MINIMUM		= std::min( { NUMBERS... } );
 
 		// Maximum of collection.
-		static constexpr const TNumberType MAXIMUM						= Internal::NumericCollectionMaximum<TNumberType, NUMBERS...>::RESULT;
+		static inline const TNumberType MAXIMUM		= std::max( { NUMBERS... } );
 	};
-
-	template< typename TNumberType, TNumberType... NUMBERS >
-	constexpr const TNumberType NumericCollection<TNumberType, NUMBERS...>::ITEMS[ sizeof...(NUMBERS) ];
+}
 }
 }
 }
