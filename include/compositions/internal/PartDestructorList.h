@@ -5,7 +5,7 @@ namespace Black
 {
 inline namespace DataOriented
 {
-inline namespace Composition
+inline namespace Compositions
 {
 namespace Internal
 {
@@ -13,14 +13,12 @@ namespace Internal
 	template< typename THost, typename... TParts >
 	struct PartDestructorList
 	{
-		static constexpr const Black::GlobalFunctionPointer<void, void*> FUNCTIONS[ sizeof...( TParts ) ] = {
+		using DestructionFunction = void (*)( void* );
+
+		static inline constexpr const DestructionFunction FUNCTIONS[] = {
 			&PartConstructionPolicy<TParts, THost>::Destruct...
 		};
 	};
-
-	template< typename THost, typename... TParts >
-	constexpr const Black::GlobalFunctionPointer<void, void*> PartDestructorList<THost, TParts...>::FUNCTIONS[ sizeof...( TParts ) ];
-
 
 	// Deduction branch. Simplify the parts deduction from collection.
 	template< typename THost, typename... TParts >
