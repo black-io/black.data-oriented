@@ -5,7 +5,9 @@ namespace Black
 {
 inline namespace DataOriented
 {
-inline namespace TypeUtils
+inline namespace Global
+{
+inline namespace Types
 {
 	// Trivial collection of types.
 	template< typename... TTypes >
@@ -44,19 +46,20 @@ inline namespace TypeUtils
 
 
 		// Length of collection.
-		static constexpr const size_t LENGTH	= sizeof...( TTypes );
+		static inline constexpr const size_t LENGTH		= sizeof...( TTypes );
 
 		// Ordinal index of type. `UNDEFINED_INDEX` in case of type does not exist in collection.
 		template< typename TType >
-		static constexpr const size_t INDEX_OF	= Internal::TypesCollectionIndexHelper<0, TType, TypesCollection<TTypes...>>::RESULT;
+		static inline constexpr const size_t INDEX_OF	= Internal::TypesCollectionIndexHelper<0, TType, TypesCollection<TTypes...>>::RESULT;
 
 		// Whether the type exist in collection.
 		template< typename TType >
-		static constexpr const bool IS_EXIST	= INDEX_OF<TType> != Black::UNDEFINED_INDEX;
+		static inline constexpr const bool IS_EXIST		= INDEX_OF<TType> != Black::UNDEFINED_INDEX;
 	};
 
 	// Empty trivial types collection.
 	using TypesEmptyCollection = TypesCollection<>;
+}
 }
 }
 }
