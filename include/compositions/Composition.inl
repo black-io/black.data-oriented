@@ -10,13 +10,13 @@ inline namespace Compositions
 	template< typename THost, typename... TComponents >
 	Composition<THost, TComponents...>::Composition()
 	{
-		static_assert( Black::IS_BASE_OF<Composition<THost, TComponents...>, THost>, "The host type should be derived from composition mediator." );
+		static_assert( std::is_base_of_v<Composition<THost, TComponents...>, THost>, "The host type should be derived from composition mediator." );
 	}
 
 	template< typename THost, typename... TComponents >
 	Composition<THost, TComponents...>::~Composition()
 	{
-		DestructAllFeatures();
+		DestructAllComponents();
 	}
 
 	template< typename THost, typename... TComponents >
@@ -63,7 +63,7 @@ inline namespace Compositions
 	template< typename TComponent >
 	inline TComponent& Composition<THost, TComponents...>::GetComponent()
 	{
-		TComponent* const feature = QueryFeature<TComponent>();
+		TComponent* const feature = QueryComponent<TComponent>();
 		EXPECTS( feature != nullptr );
 
 		return *feature;
@@ -73,7 +73,7 @@ inline namespace Compositions
 	template< typename TComponent >
 	inline const TComponent& Composition<THost, TComponents...>::GetComponent() const
 	{
-		const TComponent* const feature = QueryFeature<TComponent>();
+		const TComponent* const feature = QueryComponent<TComponent>();
 		EXPECTS( feature != nullptr );
 
 		return *feature;
