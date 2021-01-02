@@ -5,7 +5,7 @@ namespace Black
 {
 inline namespace DataOriented
 {
-inline namespace Composition
+inline namespace Compositions
 {
 namespace Internal
 {
@@ -21,13 +21,13 @@ namespace Internal
 
 
 		// Total number of mapped parts.
-		static constexpr const size_t PARTS_COUNT	= Parts::LENGTH;
+		static inline constexpr const size_t PARTS_COUNT	= Parts::LENGTH;
 
 		// Total size of memory, which the partition may occupy.
-		static constexpr const size_t SIZE			= TypesCollectionStats<TParts...>::SIZE;
+		static inline constexpr const size_t SIZE			= TypesCollectionStats<TParts...>::SIZE;
 
 		// Alignment of the partition.
-		static constexpr const size_t ALIGNMENT		= TypesCollectionStats<TParts...>::ALIGNMENT;
+		static inline constexpr const size_t ALIGNMENT		= TypesCollectionStats<TParts...>::ALIGNMENT;
 	};
 }
 }
