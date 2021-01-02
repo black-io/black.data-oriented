@@ -5,7 +5,9 @@ namespace Black
 {
 inline namespace DataOriented
 {
-inline namespace Utils
+inline namespace Global
+{
+inline namespace Types
 {
 	/**
 		@brief	Trivial memory block.
@@ -71,6 +73,7 @@ inline namespace Utils
 	private:
 		std::byte m_memory[ ALIGNED_MEMORY_SIZE ]; // The memory stored by block.
 	};
+}
 }
 }
 }
