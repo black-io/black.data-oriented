@@ -5,17 +5,10 @@ namespace Black
 {
 inline namespace DataOriented
 {
-inline namespace TypeUtils
+inline namespace Global
 {
-	// Forward declaration for types collection.
-	template< typename... TTypes >
-	struct TypesCollection;
-
-	// Forward declaration for types union.
-	template< typename... TTypes >
-	struct TypesUnion;
-
-
+inline namespace Types
+{
 namespace Internal
 {
 	// Helper class to find the ordinal index of type in collection.
@@ -24,26 +17,26 @@ namespace Internal
 
 	// Deduction branch. Keep looking for type in collection.
 	template< size_t BASE_INDEX, typename TSearchedType, typename THead, typename... TRest >
-	struct TypesCollectionIndexHelper<BASE_INDEX, TSearchedType, TypesCollection<THead, TRest...>> final
+	struct TypesCollectionIndexHelper<BASE_INDEX, TSearchedType, Black::TypesCollection<THead, TRest...>> final
 	{
 		// We need to go deeper.
-		static constexpr const size_t RESULT	= TypesCollectionIndexHelper<BASE_INDEX + 1, TSearchedType, TypesCollection<TRest...>>::RESULT;
+		static inline constexpr size_t RESULT	= TypesCollectionIndexHelper<BASE_INDEX + 1, TSearchedType, Black::TypesCollection<TRest...>>::RESULT;
 	};
 
 	// Terminal branch. Returning the index of searched type.
 	template< size_t BASE_INDEX, typename TSearchedType, typename... TTypes >
-	struct TypesCollectionIndexHelper<BASE_INDEX, TSearchedType, TypesCollection<TSearchedType, TTypes...>> final
+	struct TypesCollectionIndexHelper<BASE_INDEX, TSearchedType, Black::TypesCollection<TSearchedType, TTypes...>> final
 	{
 		// Index of searched type.
-		static constexpr const size_t RESULT	= BASE_INDEX;
+		static inline constexpr size_t RESULT	= BASE_INDEX;
 	};
 
 	// Terminal branch. No type found.
 	template< size_t BASE_INDEX, typename TSearchedType >
-	struct TypesCollectionIndexHelper<BASE_INDEX, TSearchedType, TypesCollection<>> final
+	struct TypesCollectionIndexHelper<BASE_INDEX, TSearchedType, Black::TypesCollection<>> final
 	{
 		// The index of searched type is undefined.
-		static constexpr const size_t RESULT	= Black::UNDEFINED_INDEX;
+		static inline constexpr size_t RESULT	= Black::UNDEFINED_INDEX;
 	};
 
 	// Helper to unfold the types collection.
@@ -52,34 +45,34 @@ namespace Internal
 
 	// Deduction branch. Regular unfolding.
 	template< typename TRawHead, typename... TRawRest, typename... TUnfoldedTypes >
-	struct TypesCollectionUnfoldHelper<TypesCollection<TRawHead, TRawRest...>, TUnfoldedTypes...>
-		: TypesCollectionUnfoldHelper<TypesCollection<TRawRest...>, TUnfoldedTypes..., TRawHead>
+	struct TypesCollectionUnfoldHelper<Black::TypesCollection<TRawHead, TRawRest...>, TUnfoldedTypes...>
+		: TypesCollectionUnfoldHelper<Black::TypesCollection<TRawRest...>, TUnfoldedTypes..., TRawHead>
 	{
 
 	};
 
 	// Deduction branch. Unfold the inner collection.
 	template< typename... TInnerRawTypes, typename... TRawRest, typename... TUnfoldedTypes >
-	struct TypesCollectionUnfoldHelper<TypesCollection<TypesCollection<TInnerRawTypes...>, TRawRest...>, TUnfoldedTypes...>
-		: TypesCollectionUnfoldHelper<TypesCollection<TInnerRawTypes..., TRawRest...>, TUnfoldedTypes...>
+	struct TypesCollectionUnfoldHelper<Black::TypesCollection<Black::TypesCollection<TInnerRawTypes...>, TRawRest...>, TUnfoldedTypes...>
+		: TypesCollectionUnfoldHelper<Black::TypesCollection<TInnerRawTypes..., TRawRest...>, TUnfoldedTypes...>
 	{
 
 	};
 
 	// Deduction branch. Unfold the inner union.
 	template< typename... TInnerRawTypes, typename... TRawRest, typename... TUnfoldedTypes >
-	struct TypesCollectionUnfoldHelper<TypesCollection<TypesUnion<TInnerRawTypes...>, TRawRest...>, TUnfoldedTypes...>
-		: TypesCollectionUnfoldHelper<TypesCollection<TInnerRawTypes..., TRawRest...>, TUnfoldedTypes...>
+	struct TypesCollectionUnfoldHelper<Black::TypesCollection<TypesUnion<TInnerRawTypes...>, TRawRest...>, TUnfoldedTypes...>
+		: TypesCollectionUnfoldHelper<Black::TypesCollection<TInnerRawTypes..., TRawRest...>, TUnfoldedTypes...>
 	{
 
 	};
 
 	// Terminal branch. The collection is unfolded.
 	template< typename... TUnfoldedTypes >
-	struct TypesCollectionUnfoldHelper<TypesCollection<>, TUnfoldedTypes...>
+	struct TypesCollectionUnfoldHelper<Black::TypesCollection<>, TUnfoldedTypes...>
 	{
 		// Unfolded collection.
-		using Collection = TypesCollection<TUnfoldedTypes...>;
+		using Collection = Black::TypesCollection<TUnfoldedTypes...>;
 	};
 
 	// Helper class to merge two collections.
@@ -146,6 +139,7 @@ namespace Internal
 		// The type at index.
 		using Result = typename decltype( TypesCollectionSelectionHelper<TYPE_INDEX>::template Select( static_cast<TypeWrap<TTypes>*>(0)... ) )::Content;
 	};
+}
 }
 }
 }
