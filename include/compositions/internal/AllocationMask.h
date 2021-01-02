@@ -5,7 +5,7 @@ namespace Black
 {
 inline namespace DataOriented
 {
-inline namespace Composition
+inline namespace Compositions
 {
 namespace Internal
 {
@@ -35,17 +35,18 @@ namespace Internal
 		// Storage for bit-mask.
 		using BitBuffer = size_t;
 
+
 		// Storage element alignment in bits.
-		static constexpr const size_t BUFFER_BIT_ALIGNMENT	= alignof( BitBuffer ) * 8;
+		static inline constexpr const size_t BUFFER_BIT_ALIGNMENT	= alignof( BitBuffer ) * 8;
 
 		// Storage element size on bits.
-		static constexpr const size_t BITS_PER_BUFFER		= sizeof( BitBuffer ) * 8;
+		static inline constexpr const size_t BITS_PER_BUFFER		= sizeof( BitBuffer ) * 8;
 
 		// Aligned length of bit-mask storage.
-		static constexpr const size_t STORAGE_LENGTH		= Black::GetAlignedSize( MASK_LENGH, BUFFER_BIT_ALIGNMENT ) / BITS_PER_BUFFER;
+		static inline constexpr const size_t STORAGE_LENGTH			= Black::GetAlignedSize( MASK_LENGH, BUFFER_BIT_ALIGNMENT ) / BITS_PER_BUFFER;
 
 		// Single first bit of storage.
-		static constexpr const BitBuffer FirstBit			= 1;
+		static inline constexpr const BitBuffer FIRST_BIT			= 1;
 
 	// Private interface.
 	private:
@@ -56,7 +57,7 @@ namespace Internal
 		static constexpr const size_t GetBitIndex( const size_t bit_index )		{ return bit_index % BITS_PER_BUFFER; };
 
 		// Get the bit-mask for given allocation index.
-		static constexpr const BitBuffer GetBitMask( const size_t bit_index )	{ return FirstBit << GetBitIndex( bit_index ); };
+		static constexpr const BitBuffer GetBitMask( const size_t bit_index )	{ return FIRST_BIT << GetBitIndex( bit_index ); };
 
 		// Test the allocation index to be valid.
 		static inline void TestIndex( const size_t bit_index )					{ EXPECTS_DEBUG( bit_index < MASK_LENGH ); };
@@ -70,7 +71,7 @@ namespace Internal
 
 	// Private state.
 	private:
-		BitBuffer	m_bits[ STORAGE_LENGTH ];	// Allocation bits storage.
+		BitBuffer m_bits[ STORAGE_LENGTH ];	// Allocation bits storage.
 	};
 }
 }
