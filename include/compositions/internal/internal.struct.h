@@ -5,7 +5,7 @@ namespace Black
 {
 inline namespace DataOriented
 {
-inline namespace Composition
+inline namespace Compositions
 {
 namespace Internal
 {
@@ -25,17 +25,17 @@ namespace Internal
 	template< typename TType >
 	struct TypeStats final
 	{
-		static_assert( !Black::IS_VOID<TType>,			"Type should not be void." );
-		static_assert( !Black::IS_CONST<TType>,			"Type should not be constant." );
-		static_assert( !Black::IS_REFERENCE<TType>,		"Type should not be reference." );
-		static_assert( !Black::IS_POINTER<TType>,		"Type should not be pointer." );
+		static_assert( !std::is_void_v<TType>,			"Type should not be void." );
+		static_assert( !std::is_const_v<TType>,			"Type should not be constant." );
+		static_assert( !std::is_reference_v<TType>,		"Type should not be reference." );
+		static_assert( !std::is_pointer_v<TType>,		"Type should not be pointer." );
 
 
 		// Size of type.
-		static constexpr const size_t SIZE		= sizeof( TType );
+		static inline constexpr const size_t SIZE		= sizeof( TType );
 
 		// Alignment of type.
-		static constexpr const size_t ALIGNMENT	= alignof( TType );
+		static inline constexpr const size_t ALIGNMENT	= alignof( TType );
 	};
 
 	// Deduction branch. Collection complex stats.
