@@ -9,7 +9,17 @@ inline namespace Memory
 {
 namespace Internal
 {
-	// The page of aligned memory, which can store objects of arbitrary size.
+	/**
+		@brief	Representation of trivial memory arena.
+
+		This page can allocate arbitrary size of memory, each allocated pointer will be aligned with page alignment.
+		Any allocated memory may be returned to page at any time, but the page will not reuse it on allocation until be refined.
+		The memory page may be refined manually using corresponded function of automatically when all the memory is returned to page.
+		Such behavior may be used to track the memory access violations and other methods of inappropriate memory usage tracking.
+
+		@tparam	RAW_MEMORY_SIZE		Desired size of page memory.
+		@tparam	MEMORY_ALIGNMENT	Basic alignment of memory.
+	*/
 	template< size_t RAW_MEMORY_SIZE, size_t MEMORY_ALIGNMENT >
 	class RawMemoryPage final : private Black::RawMemoryBlock<RAW_MEMORY_SIZE, MEMORY_ALIGNMENT>
 	{
@@ -19,11 +29,11 @@ namespace Internal
 
 	// Public interface.
 	public:
-		// Retain the memory of given size from page.
-		inline void* RetainMemory( const size_t size );
+		// Grab the memory of given size from page.
+		inline void* Allocate( const size_t size );
 
 		// Return the memory back to the page.
-		inline void ReleaseMemory( Black::NotNull<void*> item );
+		inline void Free( Black::NotNull<void*> memory );
 
 
 		// Refine the memory of page, considering it unused after.

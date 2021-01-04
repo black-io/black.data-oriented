@@ -23,7 +23,7 @@ namespace Internal
 	}
 
 	template< size_t RAW_MEMORY_SIZE, size_t MEMORY_ALIGNMENT >
-	inline void* RawMemoryPage<RAW_MEMORY_SIZE, MEMORY_ALIGNMENT>::RetainMemory( const size_t size )
+	inline void* RawMemoryPage<RAW_MEMORY_SIZE, MEMORY_ALIGNMENT>::Allocate( const size_t size )
 	{
 		CRET( !HasEnoughMemory( size ), nullptr );
 		auto current_head	= m_unused_head;
@@ -33,10 +33,10 @@ namespace Internal
 	}
 
 	template< size_t RAW_MEMORY_SIZE, size_t MEMORY_ALIGNMENT >
-	inline void RawMemoryPage<RAW_MEMORY_SIZE, MEMORY_ALIGNMENT>::ReleaseMemory( Black::NotNull<void*> item )
+	inline void RawMemoryPage<RAW_MEMORY_SIZE, MEMORY_ALIGNMENT>::Free( Black::NotNull<void*> memory )
 	{
-		EXPECTS_DEBUG( item.Get<std::byte*>() >= Parent::GetBeginAddress() );
-		EXPECTS_DEBUG( item.Get<std::byte*>() < m_unused_head );
+		EXPECTS_DEBUG( memory.Get<std::byte*>() >= Parent::GetBeginAddress() );
+		EXPECTS_DEBUG( memory.Get<std::byte*>() < m_unused_head );
 
 		EXPECTS_DEBUG( m_blocks_count > 0 );
 		--m_blocks_count;
