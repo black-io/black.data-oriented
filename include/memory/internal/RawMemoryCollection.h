@@ -12,7 +12,9 @@ namespace Internal
 	/**
 		@brief	Collection of raw memory pages.
 
-		This collection tends to reduce the number of memory allocations and stores up to predefined number of empty pages, which may be reused in future.
+		@note		This collection tends to reduce the number of memory allocations and stores up to predefined number of empty pages,
+					which may be reused in future.
+		@warning	All chunks should be returned to collection before the collection may be destroyed.
 
 		@tparam	RAW_MEMORY_SIZE		Desired size of page memory.
 		@tparam	MEMORY_ALIGNMENT	Basic alignment of memory.
@@ -48,10 +50,10 @@ namespace Internal
 	// Private interface.
 	private:
 		// Pull the empty memory page back to used pages and return it's shared pointer.
-		inline SharedMemoryPage& PullEmptyPage();
+		inline const SharedMemoryPage& PullEmptyPage();
 
 		// Allocate the new empty page as already used and return it's shared pointer.
-		inline SharedMemoryPage& AllocateNewPage();
+		inline const SharedMemoryPage& AllocateNewPage();
 
 	// Private state.
 	private:
