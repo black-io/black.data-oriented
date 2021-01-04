@@ -10,21 +10,21 @@ inline namespace Memory
 namespace Internal
 {
 	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t ALIGNMENT >
-	RawMemoryPageCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::RawMemoryPageCollection()
+	RawMemoryCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::RawMemoryCollection()
 	{
 		m_free_pages.reserve( MAX_FREE_PAGES );
 	}
 
 	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t ALIGNMENT >
-	RawMemoryPageCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::~RawMemoryPageCollection()
+	RawMemoryCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::~RawMemoryCollection()
 	{
 		CRET( m_used_pages.empty() );
 		BLACK_LOG_WARNING( LOG_CHANNEL, "{} raw memory pages of {}b size still remains active (Leaked probably).", m_used_pages.size(), RAW_MEMORY_SIZE );
 	}
 
 	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t ALIGNMENT >
-	inline const typename RawMemoryPageCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::SharedMemoryPage&
-	RawMemoryPageCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::RetainMemoryPage( const size_t required_size )
+	inline const typename RawMemoryCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::SharedMemoryPage&
+	RawMemoryCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::RetainMemoryPage( const size_t required_size )
 	{
 		CRET( m_used_pages.empty(), PullEmptyPage() );
 		CRET( m_used_pages.back()->HasEnoughMemory( required_size ), m_used_pages.back() );
@@ -32,8 +32,8 @@ namespace Internal
 	}
 
 	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t ALIGNMENT >
-	inline void RawMemoryPageCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::ReleaseMemoryPage(
-		const typename RawMemoryPageCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::SharedMemoryPage& memory_page
+	inline void RawMemoryCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::ReleaseMemoryPage(
+		const typename RawMemoryCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::SharedMemoryPage& memory_page
 	)
 	{
 		CRETD( !Black::RemoveItem( m_used_pages, memory_page ), , LOG_CHANNEL, "Wrong release of memory page." );
@@ -42,14 +42,14 @@ namespace Internal
 	}
 
 	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t ALIGNMENT >
-	inline void RawMemoryPageCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::Refine()
+	inline void RawMemoryCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::Refine()
 	{
 		m_free_pages.clear();
 	}
 
 	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t ALIGNMENT >
-	inline typename RawMemoryPageCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::SharedMemoryPage&
-	RawMemoryPageCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::PullEmptyPage()
+	inline typename RawMemoryCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::SharedMemoryPage&
+	RawMemoryCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::PullEmptyPage()
 	{
 		CRET( m_free_pages.empty(), AllocateNewPage() );
 
@@ -61,10 +61,10 @@ namespace Internal
 	}
 
 	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t ALIGNMENT >
-	inline typename RawMemoryPageCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::SharedMemoryPage&
-	RawMemoryPageCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::AllocateNewPage()
+	inline typename RawMemoryCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::SharedMemoryPage&
+	RawMemoryCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::AllocateNewPage()
 	{
-		SharedMemoryPage empty_page = std::make_shared<typename RawMemoryPageCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::MemoryPage>();
+		SharedMemoryPage empty_page = std::make_shared<typename RawMemoryCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::MemoryPage>();
 
 		m_used_pages.emplace_back( empty_page );
 		return empty_page;

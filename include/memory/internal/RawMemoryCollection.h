@@ -19,7 +19,7 @@ namespace Internal
 		@tparam	MAX_FREE_PAGES		Number of empty pages, that will not be destroyed after it refined.
 	*/
 	template< size_t RAW_MEMORY_SIZE, size_t MEMORY_ALIGNMENT, size_t MAX_FREE_PAGES >
-	class RawMemoryPageCollection final : private Black::NonTransferable
+	class RawMemoryCollection final : private Black::NonTransferable
 	{
 	// Inner public types.
 	public:
@@ -31,8 +31,8 @@ namespace Internal
 
 	// Construction and initialization.
 	public:
-		RawMemoryPageCollection();
-		~RawMemoryPageCollection();
+		RawMemoryCollection();
+		~RawMemoryCollection();
 
 	// Public interface.
 	public:
@@ -60,7 +60,7 @@ namespace Internal
 
 	// Private non-state.
 	private:
-		static constexpr const char* LOG_CHANNEL = "Black/Memory/RawMemoryPageCollection";
+		static constexpr const char* LOG_CHANNEL = "Black/Memory/RawMemoryCollection";
 	};
 }
 }
