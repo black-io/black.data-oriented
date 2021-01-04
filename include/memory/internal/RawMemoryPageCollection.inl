@@ -42,6 +42,12 @@ namespace Internal
 	}
 
 	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t ALIGNMENT >
+	inline void RawMemoryPageCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::Refine()
+	{
+		m_free_pages.clear();
+	}
+
+	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t ALIGNMENT >
 	inline typename RawMemoryPageCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::SharedMemoryPage&
 	RawMemoryPageCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::PullEmptyPage()
 	{

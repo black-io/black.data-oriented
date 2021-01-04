@@ -9,14 +9,22 @@ inline namespace Memory
 {
 namespace Internal
 {
-	// Collection of memory pages with raw memory.
-	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t ALIGNMENT >
+	/**
+		@brief	Collection of raw memory pages.
+
+		This collection tends to reduce the number of memory allocations and stores up to predefined number of empty pages, which may be reused in future.
+
+		@tparam	RAW_MEMORY_SIZE		Desired size of page memory.
+		@tparam	MEMORY_ALIGNMENT	Basic alignment of memory.
+		@tparam	MAX_FREE_PAGES		Number of empty pages, that will not be destroyed after it refined.
+	*/
+	template< size_t RAW_MEMORY_SIZE, size_t MEMORY_ALIGNMENT, size_t MAX_FREE_PAGES >
 	class RawMemoryPageCollection final : private Black::NonTransferable
 	{
 	// Inner public types.
 	public:
 		// The type of memory pages this collection stores.
-		using MemoryPage		= RawAlignedMemoryPage<RAW_MEMORY_SIZE, ALIGNMENT>;
+		using MemoryPage		= RawMemoryPage<RAW_MEMORY_SIZE, MEMORY_ALIGNMENT>;
 
 		// Shared memory page.
 		using SharedMemoryPage	= std::shared_ptr<MemoryPage>;
@@ -47,10 +55,12 @@ namespace Internal
 
 	// Private state.
 	private:
-		static constexpr const char*	LOG_CHANNEL		= "Black/Memory/RawMemoryPageCollection";
-
 		std::deque<SharedMemoryPage>	m_used_pages;	// Collection of currently used pages.
 		std::vector<SharedMemoryPage>	m_free_pages;	// Collection of empty pages.
+
+	// Private non-state.
+	private:
+		static constexpr const char* LOG_CHANNEL = "Black/Memory/RawMemoryPageCollection";
 	};
 }
 }
