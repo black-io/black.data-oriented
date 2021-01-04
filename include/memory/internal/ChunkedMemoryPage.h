@@ -62,8 +62,8 @@ namespace Internal
 
 	// Private state.
 	private:
-		std::byte*	m_free_chunks[ CHUNKS_COUNT ];		// Stack of free chunks.
-		size_t		m_remaining_chunks = CHUNKS_COUNT;	// Head of free items stack. Actually stores count of free items.
+		void*	m_free_chunks[ CHUNKS_COUNT ];		// Stack of free chunks.
+		size_t	m_remaining_chunks = CHUNKS_COUNT;	// Head of free items stack. Actually stores count of free items.
 	};
 }
 }

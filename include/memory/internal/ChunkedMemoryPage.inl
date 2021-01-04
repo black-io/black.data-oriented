@@ -15,7 +15,7 @@ namespace Internal
 		constexpr size_t aligned_chunk_size = Black::GetAlignedSize( CHUNK_SIZE, CHUNK_ALIGNMENT );
 
 		size_t current_chunk_offset = 0;
-		for( auto chunk_slot : m_free_chunks )
+		for( auto& chunk_slot : m_free_chunks )
 		{
 			chunk_slot = Parent::GetMemory( current_chunk_offset );
 			current_chunk_offset += aligned_chunk_size;
@@ -40,7 +40,7 @@ namespace Internal
 	{
 		EXPECTS( m_remaining_chunks , CHUNKS_COUNT );
 		EXPECTS( Parent::IsInside( memory.Get() ) );
-		EXPECTS( ( static_cast<std::uintptr_t>( memory.Get() ) % CHUNK_ALIGNMENT ) == 0 );
+		EXPECTS( ( reinterpret_cast<std::uintptr_t>( memory.Get() ) % CHUNK_ALIGNMENT ) == 0 );
 
 		// Just put item back and shift the head of stack.
 		m_free_chunks[ m_remaining_chunks++ ] = memory.Get<std::byte*>();
@@ -53,7 +53,7 @@ namespace Internal
 		CRET( !Parent::IsInside( chunk.Get() ), false );
 
 		// Expecting that `chunk` is properly aligned.
-		EXPECTS( ( static_cast<std::uintptr_t>( chunk.Get() ) % CHUNK_ALIGNMENT ) == 0 );
+		EXPECTS( ( reinterpret_cast<std::uintptr_t>( chunk.Get() ) % CHUNK_ALIGNMENT ) == 0 );
 		return true;
 	}
 }
