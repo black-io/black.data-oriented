@@ -53,8 +53,8 @@ namespace Internal
 
 	// Private state.
 	private:
-		std::byte*	m_unused_head	= Parent::GetBeginAddress();	// The pointer to first unused byte of page.
-		size_t		m_blocks_count	= 0;							// Count of currently allocated blocks.
+		void*	m_unused_head	= Parent::GetMemory( 0 );	// The pointer to first unused byte of page.
+		size_t	m_blocks_count	= 0;						// Count of currently allocated blocks.
 	};
 }
 }

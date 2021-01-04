@@ -18,7 +18,7 @@ namespace Internal
 	template< size_t RAW_MEMORY_SIZE, size_t MEMORY_ALIGNMENT >
 	inline void RawMemoryPage<RAW_MEMORY_SIZE, MEMORY_ALIGNMENT>::Refine()
 	{
-		m_unused_head	= Parent::GetBeginAddress();
+		m_unused_head	= Parent::GetMemory( 0 );
 		m_blocks_count	= 0;
 	}
 
@@ -27,7 +27,7 @@ namespace Internal
 	{
 		CRET( !HasEnoughMemory( size ), nullptr );
 		auto current_head	= m_unused_head;
-		m_unused_head		+= Black::GetAlignedSize( size, MEMORY_ALIGNMENT );
+		m_unused_head		= reinterpret_cast<std::byte*>( m_unused_head ) + Black::GetAlignedSize( size, MEMORY_ALIGNMENT );
 		++m_blocks_count;
 		return current_head;
 	}
@@ -48,7 +48,7 @@ namespace Internal
 	template< size_t RAW_MEMORY_SIZE, size_t MEMORY_ALIGNMENT >
 	inline const bool RawMemoryPage<RAW_MEMORY_SIZE, MEMORY_ALIGNMENT>::HasEnoughMemory( const size_t size ) const
 	{
-		return ( m_unused_head + size ) <= Parent::GetEndAddress();
+		return ( reinterpret_cast<std::byte*>( m_unused_head ) + size ) <= Parent::GetEndAddress();
 	}
 }
 }
