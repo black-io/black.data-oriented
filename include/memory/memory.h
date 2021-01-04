@@ -33,29 +33,27 @@ namespace Internal
 // Deferred stuff.
 
 
-#include "AlignedMemoryPage.h"
-#include "RawAlignedMemoryPage.h"
-#include "RawMemoryPageCollection.h"
-#include "SlicedAlignedMemoryPage.h"
-#include "MemoryPageCollection.h"
-#include "MemoryPageDirector.h"
+#include "internal/RawAlignedMemoryPage.h"
+#include "internal/RawMemoryPageCollection.h"
+#include "internal/SlicedAlignedMemoryPage.h"
+#include "internal/MemoryPageCollection.h"
+#include "internal/MemoryPageDirector.h"
 
 #include "WeakObjectAllocator.h"
 #include "StrongObjectAllocator.h"
-#include "WeakSharedAllocator.h"
-#include "StrongSharedAllocator.h"
-#include "RawMemoryObjectAllocator.h"
-#include "RawMemorySharedAllocator.h"
+#include "internal/WeakSharedAllocator.h"
+#include "internal/StrongSharedAllocator.h"
+#include "internal/RawMemoryObjectAllocator.h"
+#include "internal/RawMemorySharedAllocator.h"
 
 #include "ObjectPool.h"
 #include "MemoryFrame.h"
 #include "MemoryPool.h"
 
 
-#include "AlignedMemoryPage.inl"
-#include "RawAlignedMemoryPage.inl"
-#include "RawMemoryPageCollection.inl"
-#include "SlicedAlignedMemoryPage.inl"
-#include "MemoryPageCollection.inl"
-#include "MemoryPageDirector.inl"
+#include "internal/RawAlignedMemoryPage.inl"
+#include "internal/RawMemoryPageCollection.inl"
+#include "internal/SlicedAlignedMemoryPage.inl"
+#include "internal/MemoryPageCollection.inl"
+#include "internal/MemoryPageDirector.inl"
 #include "MemoryFrame.inl"
