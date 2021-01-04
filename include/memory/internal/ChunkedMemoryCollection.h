@@ -10,74 +10,73 @@ inline namespace Memory
 namespace Internal
 {
 	/**
-		@brief	Collection of memory pages.
-		Collection of memory pages controls the life cycle of pages.
-		Also collection proxies grabbing and releasing memory pointers from pages.
+		@brief	Collection of chunked memory pages.
 
-		@tparam	ITEM_SIZE		Size of single item in page.
-		@tparam	ITEMS_PER_PAGE	Size of single memory page.
-		@tparam	ALIGNMENT		Alignment of memory page. Only positive `PoT` values, beginning from `1`, allowed.
-		@tparam	MAX_FREE_PAGES	Maximum count of free pages, that director can hold.
+		This collection operates with fixed-size chunks of memory. It may be used to store the memory of objects with same size and appropriate alignment.
+		But collection does mot track the lifetime of objects stored in controlled memory.
+
+		@note		This collection tends to reduce the number of memory allocations and stores up to predefined number of empty pages,
+					which may be reused in future.
+		@warning	All chunks should be returned to collection before the collection may be destroyed.
+
+		@tparam	CHUNKS_COUNT		The number of chunks the page stores.
+		@tparam	CHUNK_SIZE			Size of single chunk.
+		@tparam	CHUNK_ALIGNMENT		Alignment of single chunk. Only positive `PoT` values, beginning from `1`, allowed.
+		@tparam	MAX_FREE_PAGES		Number of empty pages, that will not be destroyed after it refined.
 	*/
-	template< size_t ITEM_SIZE, size_t ITEMS_PER_PAGE, size_t ALIGNMENT, size_t MAX_FREE_PAGES >
-	class MemoryPageCollection final : public BasicMemoryPageCollection
+	template< size_t CHUNKS_COUNT, size_t CHUNK_SIZE, size_t CHUNK_ALIGNMENT, size_t MAX_FREE_PAGES >
+	class ChunkedMemoryCollection final : public BasicMemoryPageCollection
 	{
+	// Inner public types.
 	public:
-		/// @brief	Type of page this collection stores.
-		using StoringPage		= SlicedAlignedMemoryPage<ITEM_SIZE, ITEMS_PER_PAGE, ALIGNMENT>;
+		// The type of memory pages this collection stores.
+		using MemoryPage		= ChunkedMemoryPage<CHUNKS_COUNT, CHUNK_SIZE, CHUNK_ALIGNMENT>;
 
-		/// @brief	Type of shared page for this collection.
-		using SharedStoringPage	= std::shared_ptr<StoringPage>;
+		// Shared memory page.
+		using SharedMemoryPage	= std::shared_ptr<MemoryPage>;
 
-		MemoryPageCollection();
-		virtual ~MemoryPageCollection();
+	// Construction and initialization.
+	public:
+		ChunkedMemoryCollection();
+		virtual ~ChunkedMemoryCollection();
 
-		/**
-			@brief	Grab the pointer for single object from collection.
-			@see	BasicMemoryPage::RetainMemory.
+	// Public interface.
+	public:
+		// Grab the memory of single chunk.
+		inline void* AllocateChunk();
 
-			@return		The value returned is an pointer to memory of `ITEM_SIZE` size, aligned to `ALIGNMENT` bytes. Return value may not be `nullptr`.
-		*/
-		inline void* RetainObjectMemory();
+		// Return the memory of single chunk back to collection.
+		inline void FreeChunk( Black::NotNull<void*> memory );
 
-		/**
-			@brief	Return memory for single object back to page.
-			@see	BasicMemoryPage::ReleaseMemory.
-		*/
-		inline void ReleaseObjectMemory( Black::NotNull<void*> object_memory );
 
-		/**
-			@brief	Grab memory page from collection, that contain at last one free pointer.
-			This function abstractly similar to `RetainObjectMemory`, but only promises that pointer will be grabbed from returned page.
+		// Grab the memory page that can allocate at last one memory chunk.
+		inline const SharedMemoryPage& RetainMemoryPage();
 
-			@return		The value returned is an memory page, that contain at last one free pointer.
-		*/
-		inline const SharedStoringPage& RetainMemoryPage();
+		// Return the memory page back to collection. The behavior is abstractly similar to `FreeChunk`, but only tells that memory returned to page.
+		inline void ReleaseMemoryPage( const SharedMemoryPage& used_page );
 
-		/**
-			@brief	Return memory page back to collection.
-			This function abstractly similar to `ReleaseObjectMemory`, but only tells that memory pointer already returned to page.
-
-			@param	used_page	Page that was used before and now may be returned to page.
-		*/
-		inline void ReleaseMemoryPage( const SharedStoringPage& used_page );
-
-		/// @brief	Proxy function that just cast `used_page` to `SharedStoringPage` type.
+		// Proxy function that just cast `used_page` to `SharedMemoryPage` type.
 		inline void ReleaseMemoryPage( const std::shared_ptr<BasicMemoryPage>& used_page );
 
+	// Private interface.
 	private:
-		/// @brief	Allocate new page and place it as topmost used one.
-		inline const SharedStoringPage& AllocateNewPage();
+		// Pull the empty memory page back to used pages and return it's shared pointer.
+		inline const SharedMemoryPage& PullEmptyPage();
 
-		/// @brief	Retrieve empty page from `m_free_pages` and place it as topmost used one.
-		inline const SharedStoringPage& PullEmptyPage();
+		// Allocate the new empty page as already used and return it's shared pointer.
+		inline const SharedMemoryPage& AllocateNewPage();
 
-		/// @brief	Remove empty page from `m_used_pages` and try to place it to `m_free_pages`.
-		inline void TryRefineUsedPage( typename std::deque<SharedStoringPage>::iterator used_page );
+		// Perform the maintenance of memory used page.
+		inline void MaintainUsedMemory( typename std::deque<SharedMemoryPage>::iterator page_slot );
 
+	// Private state.
 	private:
-		std::deque<SharedStoringPage>	m_used_pages;
-		std::vector<SharedStoringPage>	m_free_pages;
+		std::deque<SharedMemoryPage>	m_used_pages;	// Collection of currently used pages.
+		std::vector<SharedMemoryPage>	m_free_pages;	// Collection of empty pages.
+
+	// Private non-state.
+	private:
+		static constexpr const char* LOG_CHANNEL = "Black/Memory/ChunkedMemoryCollection";
 	};
 }
 }
