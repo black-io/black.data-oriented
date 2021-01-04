@@ -12,6 +12,7 @@ namespace Internal
 	// Basic collection of abstract memory pages.
 	class BasicMemoryPageCollection : private Black::NonTransferable
 	{
+	// Construction and destruction.
 	public:
 		virtual ~BasicMemoryPageCollection() = default;
 	};
@@ -19,14 +20,17 @@ namespace Internal
 	// Basic page of memory.
 	class BasicMemoryPage : private Black::NonTransferable
 	{
+	// Construction and destruction.
 	public:
 		virtual ~BasicMemoryPage() = default;
 
-		/// @brief	Grab the memory from page.
-		virtual void* RetainMemory() = 0;
+	// Public interface.
+	public:
+		// Grab the memory from page.
+		virtual void* Allocate() = 0;
 
-		/// @brief	Return memory for single object back to page.
-		virtual void ReleaseMemory( Black::NotNull<void*> item ) = 0;
+		// Return memory for single object back to page.
+		virtual void Free( Black::NotNull<void*> memory ) = 0;
 	};
 }
 }
