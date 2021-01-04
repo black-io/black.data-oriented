@@ -10,53 +10,60 @@ inline namespace Memory
 namespace Internal
 {
 	/**
-		@brief	Memory page may be used to store items of arbitrary size in one solid memory block.
-		Memory page sores only memory for object, but not objects itself. Memory page will not construct or destruct objects.
-		Memory page can align size and pointer of object.
+		@brief	Representation of number of chunks, stored in solid block of memory.
+
+		The chunk stored in this page represents only the storage for some unknown object, but not the object itself. The memory page does not construct
+		or destruct the objects in its memory.
+
 		@warning	Any address, grabbed from page, must be returned to page back before page will be destroyed.
 
-		@tparam	ITEM_SIZE		Size of single item in page.
-		@tparam	ITEMS_PER_PAGE	Size of page. (Count of items in page)
-		@tparam	ITEM_ALIGNMENT	Address alignment of pointer to item. Only positive `PoT` values, beginning from `1`, allowed.
+		@tparam	CHUNKS_COUNT	The number of chunks the page stores.
+		@tparam	CHUNK_SIZE		Size of single chunk.
+		@tparam	CHUNK_ALIGNMENT	Alignment of single chunk. Only positive `PoT` values, beginning from `1`, allowed.
 	*/
-	template< size_t ITEM_SIZE, size_t ITEMS_PER_PAGE, size_t ITEM_ALIGNMENT >
-	class SlicedAlignedMemoryPage final : public BasicMemoryPage, public AlignedMemoryPage<Black::GetAlignedSize( ITEM_SIZE, ITEM_ALIGNMENT ) * ITEMS_PER_PAGE, ITEM_ALIGNMENT>
+	template< size_t CHUNKS_COUNT, size_t CHUNK_SIZE, size_t CHUNK_ALIGNMENT >
+	class ChunkedMemoryPage final
+		: public BasicMemoryPage
+		, private Black::RawMemoryBlock<Black::GetAlignedSize( CHUNK_SIZE, CHUNK_ALIGNMENT ) * CHUNKS_COUNT, CHUNK_ALIGNMENT>
 	{
+	// Construction and initialization.
 	public:
-		using Parent = AlignedMemoryPage<Black::GetAlignedSize( ITEM_SIZE, ITEM_ALIGNMENT ) * ITEMS_PER_PAGE, ITEM_ALIGNMENT>;
+		ChunkedMemoryPage();
+		virtual ~ChunkedMemoryPage();
 
-		SlicedAlignedMemoryPage();
-		virtual ~SlicedAlignedMemoryPage();
-
+	// Public interface.
+	public:
 		/// @see	BasicMemoryPage::RetainMemory
-		virtual void* RetainMemory() override;
+		void* Allocate() override;
 
 		/// @see	BasicMemoryPage::ReleaseMemory
-		virtual void ReleaseMemory( Black::NotNull<void*> item ) override;
+		void Free( Black::NotNull<void*> memory ) override;
 
-		/**
-			@brief	Check if some pointer belongs to this page?
 
-			@param	item	Pointer to be checked.
-			@return			Return `true` if `item` belongs to this page.
-		*/
-		inline const bool IsItemValid( Black::NotNull<void*> item ) const;
+		// Whether the chunk belongs to this page.
+		inline const bool IsResidentChunk( Black::NotNull<void*> chunk ) const;
 
-		/// @brief	Get the count of memory pointers remaining in this page.
-		inline const size_t GetRemainingItems() const	{ return m_remaining_items; };
+		// Get the count of memory pointers remaining in this page.
+		inline const size_t GetRemainingChunks() const	{ return m_remaining_chunks; };
 
-		/// @brief	Check, is this page already empty (no pointer was grabbed from page)?
-		inline const bool IsEmpty() const				{ return m_remaining_items == ITEMS_PER_PAGE; };
+		// Whether the page is empty (i.e. no chunks allocated).
+		inline const bool IsEmpty() const				{ return m_remaining_chunks == CHUNKS_COUNT; };
 
-		/// @brief	Check, is this page already full (page holds no free pointer)?
-		inline const bool IsFull() const				{ return m_remaining_items == 0; };
+		// Whether the page already full (i.e. no free chunk remains).
+		inline const bool IsFull() const				{ return m_remaining_chunks == 0; };
 
-		/// @brief	Check, does this page holds some free pointers?
-		inline const bool HasFreeItems() const			{ return m_remaining_items > 0; };
+		// Whether the page holds some free chunks.
+		inline const bool HasFreeChunks() const			{ return m_remaining_chunks > 0; };
 
+
+	// Private inner types.
 	private:
-		size_t	m_remaining_items = ITEMS_PER_PAGE;	// Head of free items stack. Actually stores count of free items.
-		void*	m_free_items[ ITEMS_PER_PAGE ];		// Stack of free items.
+		using Parent = Black::RawMemoryBlock<Black::GetAlignedSize( CHUNK_SIZE, CHUNK_ALIGNMENT ) * CHUNKS_COUNT, CHUNK_ALIGNMENT>;
+
+	// Private state.
+	private:
+		std::byte*	m_free_chunks[ CHUNKS_COUNT ];		// Stack of free chunks.
+		size_t		m_remaining_chunks = CHUNKS_COUNT;	// Head of free items stack. Actually stores count of free items.
 	};
 }
 }

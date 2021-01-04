@@ -9,57 +9,51 @@ inline namespace Memory
 {
 namespace Internal
 {
-	template< size_t ITEM_SIZE, size_t ITEMS_PER_PAGE, size_t ITEM_ALIGNMENT >
-	SlicedAlignedMemoryPage<ITEM_SIZE, ITEMS_PER_PAGE, ITEM_ALIGNMENT>::SlicedAlignedMemoryPage()
+	template< size_t CHUNKS_COUNT, size_t CHUNK_SIZE, size_t CHUNK_ALIGNMENT >
+	ChunkedMemoryPage<CHUNKS_COUNT, CHUNK_SIZE, CHUNK_ALIGNMENT>::ChunkedMemoryPage()
 	{
-		constexpr size_t ALIGNED_ITEM_SIZE = Black::GetAlignedSize( ITEM_SIZE, ITEM_ALIGNMENT );
+		constexpr size_t aligned_chunk_size = Black::GetAlignedSize( CHUNK_SIZE, CHUNK_ALIGNMENT );
 
-		uint8_t* item_place = Parent::GetMemoryBegin();
-		for( auto& item_slot : m_free_items )
+		size_t current_chunk_offset = 0;
+		for( auto chunk_slot : m_free_chunks )
 		{
-			EXPECTS_DEBUG( item_place < Parent::GetMemoryEnd() );
-			EXPECTS_DEBUG( ( item_place + ALIGNED_ITEM_SIZE ) <= Parent::GetMemoryEnd() );
-			item_slot	= item_place;
-			item_place	+= ALIGNED_ITEM_SIZE;
+			chunk_slot = Parent::GetMemory( current_chunk_offset );
+			current_chunk_offset += aligned_chunk_size;
 		}
 	}
 
-	template< size_t ITEM_SIZE, size_t ITEMS_PER_PAGE, size_t ITEM_ALIGNMENT >
-	SlicedAlignedMemoryPage<ITEM_SIZE, ITEMS_PER_PAGE, ITEM_ALIGNMENT>::~SlicedAlignedMemoryPage()
+	template< size_t CHUNKS_COUNT, size_t CHUNK_SIZE, size_t CHUNK_ALIGNMENT >
+	ChunkedMemoryPage<CHUNKS_COUNT, CHUNK_SIZE, CHUNK_ALIGNMENT>::~ChunkedMemoryPage()
 	{
 		EXPECTS( IsEmpty() );
 	}
 
-	template< size_t ITEM_SIZE, size_t ITEMS_PER_PAGE, size_t ITEM_ALIGNMENT >
-	void* SlicedAlignedMemoryPage<ITEM_SIZE, ITEMS_PER_PAGE, ITEM_ALIGNMENT>::RetainMemory()
+	template< size_t CHUNKS_COUNT, size_t CHUNK_SIZE, size_t CHUNK_ALIGNMENT >
+	void* ChunkedMemoryPage<CHUNKS_COUNT, CHUNK_SIZE, CHUNK_ALIGNMENT>::Allocate()
 	{
-		EXPECTS( m_remaining_items > 0 );
-		return m_free_items[ --m_remaining_items ];
+		EXPECTS( m_remaining_chunks > 0 );
+		return m_free_chunks[ --m_remaining_chunks ];
 	}
 
-	template< size_t ITEM_SIZE, size_t ITEMS_PER_PAGE, size_t ITEM_ALIGNMENT >
-	void SlicedAlignedMemoryPage<ITEM_SIZE, ITEMS_PER_PAGE, ITEM_ALIGNMENT>::ReleaseMemory( Black::NotNull<void*> item )
+	template< size_t CHUNKS_COUNT, size_t CHUNK_SIZE, size_t CHUNK_ALIGNMENT >
+	void ChunkedMemoryPage<CHUNKS_COUNT, CHUNK_SIZE, CHUNK_ALIGNMENT>::Free( Black::NotNull<void*> memory )
 	{
-		EXPECTS( m_remaining_items < ITEMS_PER_PAGE );
-		EXPECTS( item.Get<uint8_t*>() >= Parent::GetMemoryBegin() );
-		EXPECTS( item.Get<uint8_t*>() < Parent::GetMemoryEnd() );
-		EXPECTS( ( (std::uintptr_t)item.Get() % ITEM_ALIGNMENT ) == 0 );
+		EXPECTS( m_remaining_chunks , CHUNKS_COUNT );
+		EXPECTS( Parent::IsInside( memory.Get() ) );
+		EXPECTS( ( static_cast<std::uintptr_t>( memory.Get() ) % CHUNK_ALIGNMENT ) == 0 );
+
 		// Just put item back and shift the head of stack.
-		m_free_items[ m_remaining_items++ ] = item.Get();
+		m_free_chunks[ m_remaining_chunks++ ] = memory.Get<std::byte*>();
 	}
 
-	template< size_t ITEM_SIZE, size_t ITEMS_PER_PAGE, size_t ITEM_ALIGNMENT >
-	inline const bool SlicedAlignedMemoryPage<ITEM_SIZE, ITEMS_PER_PAGE, ITEM_ALIGNMENT>::IsItemValid( Black::NotNull<void*> item ) const
+	template< size_t CHUNKS_COUNT, size_t CHUNK_SIZE, size_t CHUNK_ALIGNMENT >
+	inline const bool ChunkedMemoryPage<CHUNKS_COUNT, CHUNK_SIZE, CHUNK_ALIGNMENT>::IsResidentChunk( Black::NotNull<void*> chunk ) const
 	{
-		// This page almost empty.
-		CRET( m_remaining_items == ITEMS_PER_PAGE, false );
-		// `item` not in range of page.
-		CRET( item.Get<uint8_t*>() < Parent::GetMemoryBegin(), false );
-		// `item` not in range of page.
-		CRET( item.Get<uint8_t*>() >= Parent::GetMemoryEnd(), false );
+		CRET( IsEmpty(), false );
+		CRET( !Parent::IsInside( chunk.Get() ), false );
 
-		// Expecting that `item` has right alignment.
-		EXPECTS( ( (std::uintptr_t)item.Get() % ITEM_ALIGNMENT ) == 0 );
+		// Expecting that `chunk` is properly aligned.
+		EXPECTS( ( static_cast<std::uintptr_t>( chunk.Get() ) % CHUNK_ALIGNMENT ) == 0 );
 		return true;
 	}
 }
