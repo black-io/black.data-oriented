@@ -36,10 +36,12 @@ namespace Internal
 		// Whether the page already empty (no pointer was retained from page)?
 		inline const bool IsEmpty() const	{ return m_blocks_count == 0; };
 
+	// Private inner types.
 	private:
 		/// @brief	Alias for parent class.
 		using Parent = Black::RawMemoryBlock<RAW_MEMORY_SIZE, MEMORY_ALIGNMENT>;
 
+	// Private state.
 	private:
 		std::byte*	m_unused_head	= Parent::GetBeginAddress();	// The pointer to first unused byte of page.
 		size_t		m_blocks_count	= 0;							// Count of currently allocated blocks.
