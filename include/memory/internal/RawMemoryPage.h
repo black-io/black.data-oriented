@@ -11,11 +11,11 @@ namespace Internal
 {
 	// The page of aligned memory, which can store objects of arbitrary size.
 	template< size_t RAW_MEMORY_SIZE, size_t MEMORY_ALIGNMENT >
-	class RawAlignedMemoryPage final : private Black::RawMemoryBlock<RAW_MEMORY_SIZE, MEMORY_ALIGNMENT>
+	class RawMemoryPage final : private Black::RawMemoryBlock<RAW_MEMORY_SIZE, MEMORY_ALIGNMENT>
 	{
 	// Construction and initialization.
 	public:
-		virtual ~RawAlignedMemoryPage();
+		virtual ~RawMemoryPage();
 
 	// Public interface.
 	public:
