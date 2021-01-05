@@ -43,9 +43,29 @@ namespace Internal
 	}
 
 	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t ALIGNMENT >
+	inline void RawMemoryCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::Release()
+	{
+		for( auto& used_page : m_used_pages )
+		{
+			used_page->Refine();
+			CCON( m_free_pages.size() >= MAX_FREE_PAGES );
+			m_free_pages.emplace_back( std::move( used_page ) );
+		}
+
+		m_used_pages.clear();
+	}
+
+	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t ALIGNMENT >
 	inline void RawMemoryCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::Refine()
 	{
 		m_free_pages.clear();
+	}
+
+	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t ALIGNMENT >
+	inline void RawMemoryCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::Reset()
+	{
+		Refine();
+		m_used_pages.clear();
 	}
 
 	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t ALIGNMENT >

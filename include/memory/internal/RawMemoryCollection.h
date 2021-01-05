@@ -44,8 +44,15 @@ namespace Internal
 		// Return the empty memory page back to collection. Deletes `memory_page` according to internal logics.
 		inline void ReleaseMemoryPage( const SharedMemoryPage& memory_page );
 
+
+		// Release all used memory. All used pages considered unused. Some pages may be deleted.
+		inline void Release();
+
 		// Clear unused memory.
 		inline void Refine();
+
+		// Delete all allocated memory.
+		inline void Reset();
 
 	// Private interface.
 	private:
