@@ -7,93 +7,55 @@ inline namespace DataOriented
 {
 inline namespace Memory
 {
-	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t ALIGNMENT>
-	MemoryFrame<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::MemoryFrame()
+	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t MEMORY_ALIGNMENT >
+	template< typename TObject >
+	inline TObject* MemoryFrame<RAW_MEMORY_SIZE, MAX_FREE_PAGES, MEMORY_ALIGNMENT>::AllocateMemory( const size_t objects_count )
 	{
-		m_free_pages.reserve( MAX_FREE_PAGES );
-	}
+		EXPECTS( objects_count > 0 );
 
-	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t ALIGNMENT>
-	MemoryFrame<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::~MemoryFrame()
-	{
-		EXPECTS_DEBUG( m_used_pages.empty() );
-	}
+		const size_t buffer_size = sizeof( TObject ) * objects_count;
+		EXPECTS_DEBUG( buffer_size <= RAW_MEMORY_SIZE );
 
-	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t ALIGNMENT>
-	void MemoryFrame<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::Clear()
-	{
-		m_used_pages.clear();
-		m_free_pages.clear();
-	}
-
-	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t ALIGNMENT>
-	void MemoryFrame<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::Reset()
-	{
-		for( auto& used_page : m_used_pages )
+		if constexpr( alignof( TObject ) <= MEMORY_ALIGNMENT )
 		{
-			used_page->Refine();
-			CCON( m_free_pages.size() >= MAX_FREE_PAGES );
-			m_free_pages.emplace_back( used_page );
-		}
-
-		m_used_pages.clear();
-	}
-
-	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t ALIGNMENT>
-	void MemoryFrame<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::Refine()
-	{
-		m_free_pages.erase( m_free_pages.begin(), m_free_pages.end() );
-	}
-
-	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t ALIGNMENT>
-	template< typename TObjectType >
-	inline TObjectType* MemoryFrame<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::AllocateObject()
-	{
-		return AllocateObject<TObjectType>( 1 );
-	}
-
-	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t ALIGNMENT>
-	template< typename TObjectType >
-	inline TObjectType* MemoryFrame<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::AllocateObject( size_t objects_count )
-	{
-		constexpr size_t object_size	= sizeof( TObjectType );
-		//constexpr size_t object_align	= std::max( alignof( TObjectType ), ALIGNMENT ); // TODO: Implement alignment extension.
-		auto& memory_page				= GetFreeMemoryPage( object_size * objects_count );
-		return reinterpret_cast<TObjectType*>( memory_page.RetainMemory( object_size * objects_count ) );
-	}
-
-	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t ALIGNMENT>
-	template< typename TObjectType, typename... TArguments >
-	inline TObjectType* MemoryFrame<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::ConstructObject( TArguments... arguments )
-	{
-		auto object_memory = AllocateObject<TObjectType>( 1 );
-		return ::new( object_memory ) TObjectType( std::forward<TArguments>( arguments )... );
-	}
-
-	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t ALIGNMENT>
-	inline typename MemoryFrame<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::MemoryPage&
-	MemoryFrame<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::GetFreeMemoryPage( const size_t size )
-	{
-		CRET( m_used_pages.empty(), AllocateFreePage() );
-		CRET( !m_used_pages.back()->HasEnoughMemory( size ), AllocateFreePage() );
-		return *m_used_pages.back();
-	}
-
-	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t ALIGNMENT>
-	inline typename MemoryFrame<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::MemoryPage&
-	MemoryFrame<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::AllocateFreePage()
-	{
-		if( m_free_pages.empty() )
-		{
-			m_used_pages.push_back( std::make_shared<MemoryPage>() );
+			return reinterpret_cast<TObject*>( Parent::RetainMemoryPage( buffer_size )->Allocate( buffer_size ) );
 		}
 		else
 		{
-			m_used_pages.emplace_back( m_free_pages.back() );
-			m_free_pages.pop_back();
-		}
+			// Wide-enough buffer length to change the alignment of memory.
+			const size_t aligned_buffer_size = buffer_size + alignof( TObject );
+			EXPECTS_DEBUG( aligned_buffer_size <= RAW_MEMORY_SIZE );
 
-		return *m_used_pages.back();
+			// Allocated memory is aligned using `MEMORY_ALIGNMENT` and should be realigned to alignment of desired type.
+			void* buffer_memory = Parent::RetainMemoryPage( aligned_buffer_size )->Allocate( aligned_buffer_size );
+			return reinterpret_cast<TObject*>( Black::GetAlignedPointer( buffer_memory, alignof( TObject ) ) );
+		}
+	}
+
+	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t MEMORY_ALIGNMENT >
+	template< typename TObject, typename... TArguments >
+	inline TObject* MemoryFrame<RAW_MEMORY_SIZE, MAX_FREE_PAGES, MEMORY_ALIGNMENT>::ConstructObject( TArguments&&... arguments )
+	{
+		auto object_memory = AllocateMemory<TObject>();
+		return new( object_memory ) TObject{ std::forward<TArguments>( arguments )... };
+	}
+
+	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t MEMORY_ALIGNMENT >
+	inline void MemoryFrame<RAW_MEMORY_SIZE, MAX_FREE_PAGES, MEMORY_ALIGNMENT>::ReleseAllocatedMemory()
+	{
+		Parent::Release();
+	}
+
+	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t MEMORY_ALIGNMENT >
+	inline void MemoryFrame<RAW_MEMORY_SIZE, MAX_FREE_PAGES, MEMORY_ALIGNMENT>::RefineUnusedMemory()
+	{
+		Parent::Refine();
+	}
+
+	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t MEMORY_ALIGNMENT >
+	inline void MemoryFrame<RAW_MEMORY_SIZE, MAX_FREE_PAGES, MEMORY_ALIGNMENT>::DisposeMemory()
+	{
+		Parent::Reset();
 	}
 }
 }
