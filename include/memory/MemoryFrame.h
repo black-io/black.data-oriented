@@ -21,7 +21,7 @@ inline namespace Memory
 		@tparam	MEMORY_ALIGNMENT	Basic alignment of memory.
 	*/
 	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES = 1, size_t MEMORY_ALIGNMENT = 16 >
-	class MemoryFrame final : private Internal::RawMemoryCollection<RAW_MEMORY_SIZE, MEMORY_ALIGNMENT, MAX_FREE_PAGES>
+	class MemoryFrame final : private Black::NonTransferable
 	{
 	// Public interface.
 	public:
@@ -67,10 +67,9 @@ inline namespace Memory
 		*/
 		inline void DisposeMemory();
 
-	// Private inner types.
+	// Private state.
 	private:
-		// Type of parent memory collection.
-		using Parent = Internal::RawMemoryCollection<RAW_MEMORY_SIZE, MEMORY_ALIGNMENT, MAX_FREE_PAGES>;
+		Internal::RawMemoryCollection<RAW_MEMORY_SIZE, MEMORY_ALIGNMENT, MAX_FREE_PAGES> m_storage; // The storage of raw memory.
 	};
 }
 }

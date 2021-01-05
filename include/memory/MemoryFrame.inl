@@ -18,7 +18,7 @@ inline namespace Memory
 
 		if constexpr( alignof( TObject ) <= MEMORY_ALIGNMENT )
 		{
-			return reinterpret_cast<TObject*>( Parent::RetainMemoryPage( buffer_size )->Allocate( buffer_size ) );
+			return reinterpret_cast<TObject*>( m_storage.RetainMemoryPage( buffer_size )->Allocate( buffer_size ) );
 		}
 		else
 		{
@@ -27,7 +27,7 @@ inline namespace Memory
 			EXPECTS_DEBUG( aligned_buffer_size <= RAW_MEMORY_SIZE );
 
 			// Allocated memory is aligned using `MEMORY_ALIGNMENT` and should be realigned to alignment of desired type.
-			void* buffer_memory = Parent::RetainMemoryPage( aligned_buffer_size )->Allocate( aligned_buffer_size );
+			void* buffer_memory = m_storage.RetainMemoryPage( aligned_buffer_size )->Allocate( aligned_buffer_size );
 			return reinterpret_cast<TObject*>( Black::GetAlignedPointer( buffer_memory, alignof( TObject ) ) );
 		}
 	}
@@ -43,19 +43,19 @@ inline namespace Memory
 	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t MEMORY_ALIGNMENT >
 	inline void MemoryFrame<RAW_MEMORY_SIZE, MAX_FREE_PAGES, MEMORY_ALIGNMENT>::ReleseAllocatedMemory()
 	{
-		Parent::Release();
+		m_storage.Release();
 	}
 
 	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t MEMORY_ALIGNMENT >
 	inline void MemoryFrame<RAW_MEMORY_SIZE, MAX_FREE_PAGES, MEMORY_ALIGNMENT>::RefineUnusedMemory()
 	{
-		Parent::Refine();
+		m_storage.Refine();
 	}
 
 	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t MEMORY_ALIGNMENT >
 	inline void MemoryFrame<RAW_MEMORY_SIZE, MAX_FREE_PAGES, MEMORY_ALIGNMENT>::DisposeMemory()
 	{
-		Parent::Reset();
+		m_storage.Reset();
 	}
 }
 }
