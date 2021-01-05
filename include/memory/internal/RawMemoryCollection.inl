@@ -64,8 +64,8 @@ namespace Internal
 	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t ALIGNMENT >
 	inline void RawMemoryCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::Reset()
 	{
+		Release();
 		Refine();
-		m_used_pages.clear();
 	}
 
 	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t ALIGNMENT >
