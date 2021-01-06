@@ -39,9 +39,10 @@ inline namespace Memory
 		/**
 			@brief	Construct the object in its unique memory.
 			Placement `new` operator is used to construct the object, so no `delete` operator needed on destruction, but only call of destructor.
-			@tparam	TArguments	Parameter pack of types for construction arguments.
-			@param	arguments	Variable list of construction arguments for object.
-			@return				The value returned is an pointer to memory where the constructed object already stored.
+			@tparam		TObject		Type, which describes the requirement of allocated memory.
+			@tparam		TArguments	Parameter pack of types for construction arguments.
+			@param		arguments	Variable list of construction arguments for object.
+			@return					The value returned is an pointer to memory where the constructed object already stored.
 		*/
 		template< typename TObject, typename... TArguments >
 		inline TObject* ConstructObject( TArguments&&... arguments );
