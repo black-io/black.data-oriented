@@ -39,24 +39,27 @@ namespace Internal
 	inline void RawMemoryAllocator<TProduct, TMemoryCollection>::deallocate( value_type* memory, const size_t sequence_length ) noexcept
 	{
 		EXPECTS( sequence_length == 1 );
+		EXPECTS( m_shared_state != nullptr );
 		EXPECTS( m_shared_state->memory_page != nullptr );
 
 		m_shared_state->memory_page->Free( memory );
-		CRET( !m_shared_state->memory_page->IsEmpty() );
-
 		m_shared_state->collection->ReleaseMemoryPage( m_shared_state->memory_page );
 		m_shared_state->memory_page.reset();
+		m_shared_state.reset();
 	}
 
 	template< typename TProduct, typename TMemoryCollection >
 	void RawMemoryAllocator<TProduct, TMemoryCollection>::EnsureEnoughMemory() const
 	{
+		EXPECTS( m_shared_state != nullptr );
+		EXPECTS( m_shared_state->collection != nullptr );
+
 		if( !m_shared_state->memory_page )
 		{
 			m_shared_state->memory_page = m_shared_state->collection->RetainMemoryPage( sizeof( TProduct ) );
 		}
 
-		EXPECTS( m_shared_state->memory_page && m_shared_state->memory_page->HasEnoughMemory( sizeof( TProduct ) ) );
+		ENSURES( m_shared_state->memory_page && m_shared_state->memory_page->HasEnoughMemory( sizeof( TProduct ) ) );
 	}
 }
 }
