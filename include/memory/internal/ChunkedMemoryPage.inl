@@ -38,7 +38,7 @@ namespace Internal
 	template< size_t CHUNKS_COUNT, size_t CHUNK_SIZE, size_t CHUNK_ALIGNMENT >
 	void ChunkedMemoryPage<CHUNKS_COUNT, CHUNK_SIZE, CHUNK_ALIGNMENT>::Free( Black::NotNull<void*> memory )
 	{
-		EXPECTS( m_remaining_chunks , CHUNKS_COUNT );
+		EXPECTS( m_remaining_chunks < CHUNKS_COUNT );
 		EXPECTS( Parent::IsInside( memory.Get() ) );
 		EXPECTS( ( reinterpret_cast<std::uintptr_t>( memory.Get() ) % CHUNK_ALIGNMENT ) == 0 );
 
