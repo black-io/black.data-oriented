@@ -19,7 +19,7 @@ namespace Internal
 	ChunkedMemoryCollection<CHUNKS_COUNT, CHUNK_SIZE, CHUNK_ALIGNMENT, MAX_FREE_PAGES>::~ChunkedMemoryCollection()
 	{
 		CRET( m_used_pages.empty() );
-		BLACK_LOG_WARNING( LOG_CHANNEL, "{} memory pages of {}b size still remains active (Leaked probably).", m_used_pages.size(), RAW_MEMORY_SIZE );
+		BLACK_LOG_WARNING( LOG_CHANNEL, "{} memory pages of {}b size still remains active (Leaked probably).", m_used_pages.size(), CHUNK_SIZE * CHUNKS_COUNT );
 	}
 
 	template< size_t CHUNKS_COUNT, size_t CHUNK_SIZE, size_t CHUNK_ALIGNMENT, size_t MAX_FREE_PAGES >
