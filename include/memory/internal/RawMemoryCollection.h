@@ -31,6 +31,13 @@ namespace Internal
 		// Shared memory page.
 		using SharedMemoryPage	= std::shared_ptr<MemoryPage>;
 
+		// Dedicated state of allocator, that is required due to nature of standard allocators.
+		struct AllocatorState final
+		{
+			std::shared_ptr<RawMemoryCollection>	collection;		// Host of memory pages.
+			SharedMemoryPage						memory_page;	// Host of allocated memory.
+		};
+
 	// Construction and initialization.
 	public:
 		RawMemoryCollection();
