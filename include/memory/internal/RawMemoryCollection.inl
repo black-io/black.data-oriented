@@ -36,10 +36,10 @@ namespace Internal
 		const typename RawMemoryCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>::SharedMemoryPage& memory_page
 	)
 	{
+		CRET( !memory_page->IsEmpty() );
 		CRETD( !Black::RemoveItem( m_used_pages, memory_page ), , LOG_CHANNEL, "Wrong release of memory page." );
 		CRET( m_free_pages.size() >= MAX_FREE_PAGES );
 		m_free_pages.emplace_back( memory_page );
-		m_free_pages.back()->Refine();
 	}
 
 	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES, size_t ALIGNMENT >
