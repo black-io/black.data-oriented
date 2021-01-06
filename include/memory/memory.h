@@ -32,12 +32,19 @@ namespace Internal
 #include "internal/RawMemoryCollection.h"
 #include "internal/ChunkedMemoryCollection.h"
 
+#include "internal/RawMemoryAllocator.h"
+
+
 // Public implementations.
 #include "MemoryFrame.h"
+#include "MemoryPool.h"
 
 
 // Deferred stuff.
+#include "MemoryPool.inl"
 #include "MemoryFrame.inl"
+
+#include "internal/RawMemoryAllocator.inl"
 
 #include "internal/ChunkedMemoryCollection.inl"
 #include "internal/RawMemoryCollection.inl"
