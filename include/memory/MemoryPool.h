@@ -7,23 +7,53 @@ inline namespace DataOriented
 {
 inline namespace Memory
 {
-	/// @brief	Pool of raw and aligned memory, which can be used to store arbitrary object via shared owning.
-	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES = 1, size_t ALIGNMENT = 16 >
-	class MemoryPool final : private Black::NonTransferable, private std::shared_ptr<Internal::RawMemoryPageCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>>
+	/**
+		@brief	Memory pool implementation.
+
+		The memory pool implements the arena allocator with additional tracking of memory.
+		This pool may be used to host the memory for object of any type, whatever trivial or invariant one.
+
+		@warning	Before the pool may be destroyed, all the allocated object should be destroyed as well. It means even all `std::weak_ptr` should be released.
+
+		@tparam	RAW_MEMORY_SIZE		Desired size of page memory.
+		@tparam	MAX_FREE_PAGES		Number of empty pages, that will not be destroyed after it refined.
+		@tparam	MEMORY_ALIGNMENT	Basic alignment of memory.
+	*/
+	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES = 1, size_t MEMORY_ALIGNMENT = 16 >
+	class MemoryPool final : private Black::NonTransferable
 	{
-	private:
-		using Parent = std::shared_ptr< Internal::RawMemoryPageCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT> >;
-
+	// Construction and destruction.
 	public:
-		MemoryPool() : Parent( std::make_shared<Internal::RawMemoryPageCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>>() ) {};
+		~MemoryPool();
 
-		template< typename TObjectType, typename... TConstructionArguments >
-		inline std::shared_ptr<TObjectType> ConstructObject( TConstructionArguments&&... construction_arguments )
-		{
-			using Allocator = Internal::RawMemoryObjectAllocator<TObjectType, Internal::RawMemoryPageCollection<RAW_MEMORY_SIZE, MAX_FREE_PAGES, ALIGNMENT>>;
+	// Public interface.
+	public:
+		/**
+			@brief	Construct the object in its unique memory.
+			This function will use `std::allocate_shared` using the custom allocator. Once the returned shared pointer loss all references,
+			the memory will be returned back to pool.
 
-			return std::allocate_shared<TObjectType>( Allocator{ *this }, std::forward<TConstructionArguments>( construction_arguments )... );
-		}
+			@tparam		TObject		Type, which describes the requirement of allocated memory.
+			@tparam		TArguments	Parameter pack of types for construction arguments.
+			@param		arguments	Variable list of construction arguments for object.
+			@return					The value returned is shared pointer to constructed object.
+		*/
+		template< typename Tobject, typename... TArguments >
+		inline std::shared_ptr<Tobject> ConstructObject( TArguments&&... arguments );
+
+	// Private inner types.
+	private:
+		// Type of used memory storage.
+		using MemoryStorage = Internal::RawMemoryCollection<RAW_MEMORY_SIZE, MEMORY_ALIGNMENT, MAX_FREE_PAGES>;
+
+	// Private interface.
+	private:
+		// Access the shared storage.
+		inline const std::shared_ptr<MemoryStorage>& AccessMemoryStorage();
+
+	// Private state.
+	private:
+		std::shared_ptr<MemoryStorage>	m_storage;	// The storage of raw memory.
 	};
 }
 }
