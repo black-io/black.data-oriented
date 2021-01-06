@@ -34,8 +34,7 @@ namespace Internal
 		// Dedicated state of allocator, that is required due to nature of standard allocators.
 		struct AllocatorState final
 		{
-			std::shared_ptr<RawMemoryCollection>	collection;		// Host of memory pages.
-			SharedMemoryPage						memory_page;	// Host of allocated memory.
+			SharedMemoryPage memory_page; // Host of allocated memory.
 		};
 
 	// Construction and initialization.
@@ -60,6 +59,10 @@ namespace Internal
 
 		// Delete all allocated memory.
 		inline void Reset();
+
+
+		// Whether the collection store no used pages.
+		inline const bool IsEmpty() const { return m_used_pages.empty(); };
 
 	// Private interface.
 	private:

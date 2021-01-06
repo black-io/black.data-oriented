@@ -10,16 +10,17 @@ inline namespace Memory
 namespace Internal
 {
 	template< typename TProduct, typename TMemoryCollection >
-	RawMemoryAllocator<TProduct, TMemoryCollection>::RawMemoryAllocator( const std::shared_ptr<TMemoryCollection>& collection )
-		: m_shared_state{ std::make_shared<AllocatorState>() }
+	RawMemoryAllocator<TProduct, TMemoryCollection>::RawMemoryAllocator( TMemoryCollection& collection )
+		: m_collection{ collection }
+		, m_shared_state{ std::make_shared<AllocatorState>() }
 	{
-		m_shared_state->collection = collection;
 	}
 
 	template< typename TProduct, typename TMemoryCollection >
 	template< typename TOtherProduct, typename >
 	RawMemoryAllocator<TProduct, TMemoryCollection>::RawMemoryAllocator( const RawMemoryAllocator<TOtherProduct, TMemoryCollection>& other )
-		: m_shared_state{ other.GetSharedState() }
+		: m_collection{ other.GetMemoryCollection() }
+		, m_shared_state{ other.GetSharedState() }
 	{
 	}
 
@@ -43,7 +44,8 @@ namespace Internal
 		EXPECTS( m_shared_state->memory_page != nullptr );
 
 		m_shared_state->memory_page->Free( memory );
-		m_shared_state->collection->ReleaseMemoryPage( m_shared_state->memory_page );
+		m_collection.ReleaseMemoryPage( m_shared_state->memory_page );
+
 		m_shared_state->memory_page.reset();
 		m_shared_state.reset();
 	}
@@ -52,11 +54,10 @@ namespace Internal
 	void RawMemoryAllocator<TProduct, TMemoryCollection>::EnsureEnoughMemory() const
 	{
 		EXPECTS( m_shared_state != nullptr );
-		EXPECTS( m_shared_state->collection != nullptr );
 
 		if( !m_shared_state->memory_page )
 		{
-			m_shared_state->memory_page = m_shared_state->collection->RetainMemoryPage( sizeof( TProduct ) );
+			m_shared_state->memory_page = m_collection.RetainMemoryPage( sizeof( TProduct ) );
 		}
 
 		ENSURES( m_shared_state->memory_page && m_shared_state->memory_page->HasEnoughMemory( sizeof( TProduct ) ) );

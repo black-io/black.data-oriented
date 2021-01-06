@@ -27,7 +27,7 @@ namespace Internal
 		RawMemoryAllocator( const RawMemoryAllocator& )	= default;
 		RawMemoryAllocator( RawMemoryAllocator&& )		= default;
 
-		RawMemoryAllocator( const std::shared_ptr<TMemoryCollection>& collection );
+		RawMemoryAllocator( TMemoryCollection& collection );
 
 		template< typename TOtherProduct, typename = std::enable_if_t<!std::is_same_v<TOtherProduct, TProduct>> >
 		RawMemoryAllocator( const RawMemoryAllocator<TOtherProduct, TMemoryCollection>& other );
@@ -41,8 +41,11 @@ namespace Internal
 		inline void deallocate( value_type* memory, const size_t sequence_length ) noexcept;
 
 
+		// Get the bound memory collection.
+		inline TMemoryCollection& GetMemoryCollection() const					{ return m_collection; };
+
 		// Get the shared state of bound allocators.
-		inline const std::shared_ptr<AllocatorState>& GetSharedState() const { return m_shared_state; };
+		inline const std::shared_ptr<AllocatorState>& GetSharedState() const	{ return m_shared_state; };
 
 	// Private interface.
 	private:
@@ -51,7 +54,8 @@ namespace Internal
 
 	// Private state.
 	private:
-		std::shared_ptr<AllocatorState> m_shared_state; // Shared state for allocators.
+		TMemoryCollection&				m_collection;	// The host memory collection.
+		std::shared_ptr<AllocatorState> m_shared_state; // Shared state for produced allocators.
 	};
 }
 }

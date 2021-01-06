@@ -41,19 +41,9 @@ inline namespace Memory
 		template< typename Tobject, typename... TArguments >
 		inline std::shared_ptr<Tobject> ConstructObject( TArguments&&... arguments );
 
-	// Private inner types.
-	private:
-		// Type of used memory storage.
-		using MemoryStorage = Internal::RawMemoryCollection<RAW_MEMORY_SIZE, MEMORY_ALIGNMENT, MAX_FREE_PAGES>;
-
-	// Private interface.
-	private:
-		// Access the shared storage.
-		inline const std::shared_ptr<MemoryStorage>& AccessMemoryStorage();
-
 	// Private state.
 	private:
-		std::shared_ptr<MemoryStorage>	m_storage;	// The storage of raw memory.
+		Internal::RawMemoryCollection<RAW_MEMORY_SIZE, MEMORY_ALIGNMENT, MAX_FREE_PAGES> m_storage; // The storage of raw memory.
 	};
 }
 }
