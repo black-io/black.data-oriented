@@ -9,20 +9,12 @@ inline namespace Memory
 {
 namespace Internal
 {
-	// Basic collection of abstract memory pages.
-	class BasicMemoryPageCollection : private Black::NonTransferable
-	{
-	// Construction and destruction.
-	public:
-		virtual ~BasicMemoryPageCollection() = default;
-	};
-
 	// Basic page of memory.
-	class BasicMemoryPage : private Black::NonTransferable
+	class BasicChunkedMemoryPage : private Black::NonTransferable
 	{
 	// Construction and destruction.
 	public:
-		virtual ~BasicMemoryPage() = default;
+		virtual ~BasicChunkedMemoryPage() = default;
 
 	// Public interface.
 	public:
@@ -31,6 +23,19 @@ namespace Internal
 
 		// Return memory for single object back to page.
 		virtual void Free( Black::NotNull<void*> memory ) = 0;
+	};
+
+	// Basic collection of abstract memory pages.
+	class BasicChunkedMemoryCollection : private Black::NonTransferable
+	{
+	// Construction and destruction.
+	public:
+		virtual ~BasicChunkedMemoryCollection() = default;
+
+	// Public interface.
+	public:
+		// Get the size of chunk in collection.
+		virtual const size_t GetChunkSize() const = 0;
 	};
 }
 }
