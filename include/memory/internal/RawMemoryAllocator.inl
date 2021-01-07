@@ -60,7 +60,8 @@ namespace Internal
 			m_shared_state->memory_page = m_collection.RetainMemoryPage( sizeof( TProduct ) );
 		}
 
-		ENSURES( m_shared_state->memory_page && m_shared_state->memory_page->HasEnoughMemory( sizeof( TProduct ) ) );
+		ENSURES( m_shared_state->memory_page );
+		ENSURES( m_shared_state->memory_page->HasEnoughMemory( sizeof( TProduct ) ) );
 	}
 }
 }
