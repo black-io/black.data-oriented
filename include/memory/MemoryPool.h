@@ -13,7 +13,7 @@ inline namespace Memory
 		The memory pool implements the arena allocator with additional tracking of memory.
 		This pool may be used to host the memory for object of any type, whatever trivial or invariant one.
 
-		@warning	Before the pool may be destroyed, all the allocated object should be destroyed as well. It means even all `std::weak_ptr` should be released.
+		@warning	Before the pool may be destroyed, all the allocated objects should be already destroyed. It means even all `std::weak_ptr` should be released.
 
 		@tparam	RAW_MEMORY_SIZE		Desired size of page memory.
 		@tparam	MAX_FREE_PAGES		Number of empty pages, that will not be destroyed after it refined.
