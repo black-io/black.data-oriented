@@ -25,7 +25,7 @@ namespace Internal
 		@tparam	MAX_FREE_PAGES		Number of empty pages, that will not be destroyed after it refined.
 	*/
 	template< size_t CHUNKS_COUNT, size_t CHUNK_SIZE, size_t CHUNK_ALIGNMENT, size_t MAX_FREE_PAGES >
-	class ChunkedMemoryCollection final : public BasicMemoryPageCollection
+	class ChunkedMemoryCollection final : public BasicChunkedMemoryCollection
 	{
 	// Inner public types.
 	public:
@@ -56,7 +56,7 @@ namespace Internal
 		inline void ReleaseMemoryPage( const SharedMemoryPage& used_page );
 
 		// Proxy function that just cast `used_page` to `SharedMemoryPage` type.
-		inline void ReleaseMemoryPage( const std::shared_ptr<BasicMemoryPage>& used_page );
+		inline void ReleaseMemoryPage( const std::shared_ptr<BasicChunkedMemoryPage>& used_page );
 
 	// Private interface.
 	private:

@@ -84,7 +84,7 @@ namespace Internal
 
 	template< size_t CHUNKS_COUNT, size_t CHUNK_SIZE, size_t CHUNK_ALIGNMENT, size_t MAX_FREE_PAGES >
 	inline void ChunkedMemoryCollection<CHUNKS_COUNT, CHUNK_SIZE, CHUNK_ALIGNMENT, MAX_FREE_PAGES>::ReleaseMemoryPage(
-		const std::shared_ptr<BasicMemoryPage>& used_page
+		const std::shared_ptr<BasicChunkedMemoryPage>& used_page
 	)
 	{
 		ReleaseMemoryPage( std::static_pointer_cast<MemoryPage>( used_page ) );
