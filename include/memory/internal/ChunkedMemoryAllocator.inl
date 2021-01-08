@@ -59,7 +59,7 @@ namespace Internal
 	{
 		EXPECTS_DEBUG( m_shared_state != nullptr );
 
-		const auto& collection = m_collection.GetMemoryCollection<TProduct>();
+		const auto& collection = m_collection.template GetMemoryCollection<TProduct>();
 
 		if( m_shared_state->host_collection.expired() )
 		{
