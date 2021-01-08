@@ -50,7 +50,7 @@ namespace Internal
 	// Private interface.
 	private:
 		// Make guaranty that the stored memory page has enough memory for required allocation.
-		void EnsureEnoughMemory() const;
+		inline void EnsureEnoughMemory() const;
 
 	// Private state.
 	private:

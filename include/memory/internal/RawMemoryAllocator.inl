@@ -51,9 +51,9 @@ namespace Internal
 	}
 
 	template< typename TProduct, typename TMemoryCollection >
-	void RawMemoryAllocator<TProduct, TMemoryCollection>::EnsureEnoughMemory() const
+	inline void RawMemoryAllocator<TProduct, TMemoryCollection>::EnsureEnoughMemory() const
 	{
-		EXPECTS( m_shared_state != nullptr );
+		EXPECTS_DEBUG( m_shared_state != nullptr );
 
 		if( !m_shared_state->memory_page )
 		{
