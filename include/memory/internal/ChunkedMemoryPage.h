@@ -23,7 +23,7 @@ namespace Internal
 	*/
 	template< size_t CHUNKS_COUNT, size_t CHUNK_SIZE, size_t CHUNK_ALIGNMENT >
 	class ChunkedMemoryPage final
-		: public BasicMemoryPage
+		: public BasicChunkedMemoryPage
 		, private Black::RawMemoryBlock<Black::GetAlignedSize( CHUNK_SIZE, CHUNK_ALIGNMENT ) * CHUNKS_COUNT, CHUNK_ALIGNMENT>
 	{
 	// Construction and initialization.
@@ -33,12 +33,15 @@ namespace Internal
 
 	// Public interface.
 	public:
-		/// @see	BasicMemoryPage::RetainMemory
+		/// @see	BasicChunkedMemoryPage::RetainMemory
 		void* Allocate() override;
 
-		/// @see	BasicMemoryPage::ReleaseMemory
+		/// @see	BasicChunkedMemoryPage::ReleaseMemory
 		void Free( Black::NotNull<void*> memory ) override;
 
+
+		/// @see	BasicChunkedMemoryPage::HasEnoughMemory
+		const bool HasEnoughMemory( const size_t size ) const override;
 
 		// Whether the chunk belongs to this page.
 		inline const bool IsResidentChunk( Black::NotNull<void*> chunk ) const;
@@ -54,7 +57,6 @@ namespace Internal
 
 		// Whether the page holds some free chunks.
 		inline const bool HasFreeChunks() const			{ return m_remaining_chunks > 0; };
-
 
 	// Private inner types.
 	private:

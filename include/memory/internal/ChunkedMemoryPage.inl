@@ -47,6 +47,12 @@ namespace Internal
 	}
 
 	template< size_t CHUNKS_COUNT, size_t CHUNK_SIZE, size_t CHUNK_ALIGNMENT >
+	const bool ChunkedMemoryPage<CHUNKS_COUNT, CHUNK_SIZE, CHUNK_ALIGNMENT>::HasEnoughMemory( const size_t size ) const
+	{
+		return size == CHUNK_SIZE;
+	}
+
+	template< size_t CHUNKS_COUNT, size_t CHUNK_SIZE, size_t CHUNK_ALIGNMENT >
 	inline const bool ChunkedMemoryPage<CHUNKS_COUNT, CHUNK_SIZE, CHUNK_ALIGNMENT>::IsResidentChunk( Black::NotNull<void*> chunk ) const
 	{
 		CRET( IsEmpty(), false );
