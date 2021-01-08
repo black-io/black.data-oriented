@@ -9,7 +9,17 @@ inline namespace Memory
 {
 namespace Internal
 {
-	// Proxy type to hide the concrete memory collection.
+	/**
+		@brief	Proxy type to hide the concrete memory collection.
+
+		This proxy helps to interact with implementation-defined manner of standard allocators. Since the actual size of allocated memory
+		is unknown for shared pointers, there is no other obvious way to calculate size of chunk for memory collection.
+		This proxy defers the construction of concrete memory collection up to moment the allocated memory already required.
+
+		@tparam	CHUNKS_PER_PAGE		The number of chunks the actual page stores.
+		@tparam	MAX_FREE_PAGES		Number of empty pages, that will not be destroyed after it refined.
+		@tparam	MEMORY_ALIGNMENT	Alignment of single chunk. Only positive `PoT` values, beginning from `1`, allowed.
+	*/
 	template< size_t CHUNKS_PER_PAGE, size_t MAX_FREE_PAGES, size_t MEMORY_ALIGNMENT >
 	class ChunkedMemoryProxy final : private Black::NonCopyable
 	{
