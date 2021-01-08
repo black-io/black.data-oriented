@@ -20,7 +20,7 @@ inline namespace Memory
 		@tparam	MAX_FREE_PAGES		Number of empty pages, that will not be destroyed after it refined.
 		@tparam	MEMORY_ALIGNMENT	Basic alignment of memory.
 	*/
-	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES = 1, size_t MEMORY_ALIGNMENT = 16 >
+	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES = 1, size_t MEMORY_ALIGNMENT = alignof( void* ) >
 	class MemoryFrame final : private Black::NonTransferable
 	{
 	// Public interface.
