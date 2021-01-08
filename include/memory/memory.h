@@ -23,7 +23,6 @@ namespace Internal
 
 
 // Fundamental internal stuff.
-#include "internal/forwards.h"
 #include "internal/interfaces.h"
 
 #include "internal/RawMemoryPage.h"
@@ -31,21 +30,29 @@ namespace Internal
 
 #include "internal/RawMemoryCollection.h"
 #include "internal/ChunkedMemoryCollection.h"
+#include "internal/ChunkedMemoryProxy.h"
 
 #include "internal/RawMemoryAllocator.h"
+#include "internal/ChunkedMemoryAllocator.h"
 
 
 // Public implementations.
 #include "MemoryFrame.h"
 #include "MemoryPool.h"
+#include "UnmanagedObjectPool.h"
+#include "ManagedObjectPool.h"
 
 
 // Deferred stuff.
+#include "ManagedObjectPool.inl"
+#include "UnmanagedObjectPool.inl"
 #include "MemoryPool.inl"
 #include "MemoryFrame.inl"
 
+#include "internal/ChunkedMemoryAllocator.inl"
 #include "internal/RawMemoryAllocator.inl"
 
+#include "internal/ChunkedMemoryProxy.inl"
 #include "internal/ChunkedMemoryCollection.inl"
 #include "internal/RawMemoryCollection.inl"
 
