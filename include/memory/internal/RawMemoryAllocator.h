@@ -9,7 +9,18 @@ inline namespace Memory
 {
 namespace Internal
 {
-	// Raw memory allocator.
+	/**
+		@brief	Proxy type to satisfy the requirements of standard allocators.
+
+		This allocator is used by `Black::MemoryPool` to construct the objects via `std::allocate_shared`.
+		This allocator is state-full and deals with some violations of C++ standard in some build systems. So it may be considered true standard allocator.
+		The shared state of allocator is created only one way, where the `RawMemoryAllocator( TMemoryCollection& collection )` is used.
+		All other copies of constructed allocator are considered shared copies, that share the same state of main allocator. Such behavior helps to deal
+		with undocumented conversions and copy-constructions of main allocator while execution of `std::allocate_shared`.
+
+		@tparam	TProduct			Type of produced objects.
+		@tparam	TMemoryCollection	The host of allocated memory.
+	*/
 	template< typename TProduct, typename TMemoryCollection >
 	class RawMemoryAllocator final
 	{
