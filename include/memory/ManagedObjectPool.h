@@ -17,12 +17,11 @@ inline namespace Memory
 
 		@tparam	TObject				Type of object to be stored and produced by pool
 		@tparam	OBJECTS_PER_PAGE	Length of single memory page in objects.
-		@tparam	TAllocator			Allocator template to be used for object construction.
 		@tparam	MAX_FREE_PAGES		Number of empty pages, that will not be destroyed after it refined.
 		@tparam	MEMORY_ALIGNMENT	Basic alignment of memory. Should satisfy the requirement of `TObject`.
 	*/
-	template< typename TObject, size_t OBJECTS_PER_PAGE, template< typename, typename > class TAllocator, size_t MAX_FREE_PAGES = 1, size_t MEMORY_ALIGNMENT = 16 >
-	class ObjectPool final
+	template< typename TObject, size_t OBJECTS_PER_PAGE, size_t MAX_FREE_PAGES = 1, size_t MEMORY_ALIGNMENT = alignof( void* ) >
+	class ManagedObjectPool final
 	{
 	// Public inner types.
 	public:
@@ -30,11 +29,7 @@ inline namespace Memory
 		using StoredType	= TObject;
 
 		// Type of allocation result.
-		using ProductType	= std::shared_ptr<StoredObject>;
-
-	// Construction and destruction.
-	public:
-		~ObjectPool();
+		using ProductType	= std::shared_ptr<StoredType>;
 
 	// Public interface.
 	public:
@@ -48,17 +43,20 @@ inline namespace Memory
 			@param		arguments	Variable list of construction arguments for object.
 			@return					The value returned is shared pointer to constructed object.
 		*/
-		template< typename Tobject, typename... TArguments >
+		template< typename... TArguments >
 		inline ProductType ConstructObject( TArguments&&... arguments );
 
 	// Private inner types.
 	private:
-		//
-		using ChunkedAllocator = Internal::ChunkedMemoryAllocator<OBJECTS_PER_PAGE, MAX_FREE_PAGES, std::max( alignof( TObject ), MEMORY_ALIGNMENT )>;
+		// Type of used memory collection.
+		using MemoryStorage = Internal::ChunkedMemoryProxy<OBJECTS_PER_PAGE, MAX_FREE_PAGES, MEMORY_ALIGNMENT>;
+
+		// Standard allocator to be used.
+		using Allocator = Internal::ChunkedMemoryAllocator<TObject, MemoryStorage>;
 
 	// Private state.
 	private:
-		ChunkedAllocator m_collection_proxy; //
+		MemoryStorage m_storage; // The storage of memory.
 	};
 }
 }
