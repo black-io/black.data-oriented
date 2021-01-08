@@ -19,7 +19,7 @@ inline namespace Memory
 		@tparam	MAX_FREE_PAGES		Number of empty pages, that will not be destroyed after it refined.
 		@tparam	MEMORY_ALIGNMENT	Basic alignment of memory.
 	*/
-	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES = 1, size_t MEMORY_ALIGNMENT = 16 >
+	template< size_t RAW_MEMORY_SIZE, size_t MAX_FREE_PAGES = 1, size_t MEMORY_ALIGNMENT = alignof( void* ) >
 	class MemoryPool final : private Black::NonTransferable
 	{
 	// Construction and destruction.
@@ -38,12 +38,17 @@ inline namespace Memory
 			@param		arguments	Variable list of construction arguments for object.
 			@return					The value returned is shared pointer to constructed object.
 		*/
-		template< typename Tobject, typename... TArguments >
-		inline std::shared_ptr<Tobject> ConstructObject( TArguments&&... arguments );
+		template< typename TObject, typename... TArguments >
+		inline std::shared_ptr<TObject> ConstructObject( TArguments&&... arguments );
+
+	// Private inner types.
+	private:
+		// Type of used memory collection.
+		using MemoryStorage = Internal::RawMemoryCollection<RAW_MEMORY_SIZE, MEMORY_ALIGNMENT, MAX_FREE_PAGES>;
 
 	// Private state.
 	private:
-		Internal::RawMemoryCollection<RAW_MEMORY_SIZE, MEMORY_ALIGNMENT, MAX_FREE_PAGES> m_storage; // The storage of raw memory.
+		MemoryStorage m_storage; // The storage of raw memory.
 	};
 }
 }
