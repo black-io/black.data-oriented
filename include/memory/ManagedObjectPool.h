@@ -13,7 +13,13 @@ inline namespace Memory
 		The object pool implements the special allocator to reduce the time of concrete object construction.
 		It is much useful to produce the objects very intensively with lower allocation costs.
 
-		@warning	Before the pool may be destroyed, all the allocated objects should be already destroyed. It means even all `std::weak_ptr` should be released.
+		@warning	This memory pool does not tracks the allocated objects on destruction.
+		If pool is destroyed while there are some alive objects previously allocated by it, the host memory pages of this objects will be decoupled from pool.
+		It means that the objects will remains alive after the pool is destroyed, but entire memory page of each object will not be released
+		until the object destroyed. Even weak pointers should be cleared to release the memory of decoupled memory page.
+
+		Such behavior is useful in rare situations, but it alway may be considered as memory leak.
+		This type named as managed meaning that it manages the memory of created objects after destruction of pool.
 
 		@tparam	TObject				Type of object to be stored and produced by pool
 		@tparam	OBJECTS_PER_PAGE	Length of single memory page in objects.
