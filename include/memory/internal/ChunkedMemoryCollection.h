@@ -27,14 +27,6 @@ namespace Internal
 	template< size_t CHUNKS_COUNT, size_t CHUNK_SIZE, size_t CHUNK_ALIGNMENT, size_t MAX_FREE_PAGES >
 	class ChunkedMemoryCollection final : public BasicChunkedMemoryCollection
 	{
-	// Inner public types.
-	public:
-		// The type of memory pages this collection stores.
-		using MemoryPage		= ChunkedMemoryPage<CHUNKS_COUNT, CHUNK_SIZE, CHUNK_ALIGNMENT>;
-
-		// Shared memory page.
-		using SharedMemoryPage	= std::shared_ptr<MemoryPage>;
-
 	// Construction and initialization.
 	public:
 		ChunkedMemoryCollection();
@@ -42,21 +34,23 @@ namespace Internal
 
 	// Public interface.
 	public:
-		// Grab the memory of single chunk.
-		inline void* AllocateChunk();
+		/// @see	BasicChunkedMemoryCollection::RetainMemoryPage
+		std::shared_ptr<BasicChunkedMemoryPage> RetainMemoryPage() override;
 
-		// Return the memory of single chunk back to collection.
-		inline void FreeChunk( Black::NotNull<void*> memory );
+		/// @see	BasicChunkedMemoryCollection::ReleaseMemoryPage
+		void ReleaseMemoryPage( const std::shared_ptr<BasicChunkedMemoryPage>& used_page ) override;
 
 
-		// Grab the memory page that can allocate at last one memory chunk.
-		inline const SharedMemoryPage& RetainMemoryPage();
+		/// @see	BasicChunkedMemoryCollection::IsEmpty
+		const bool IsEmpty() const override		{ return m_used_pages.empty(); };
 
-		// Return the memory page back to collection. The behavior is abstractly similar to `FreeChunk`, but only tells that memory returned to page.
-		inline void ReleaseMemoryPage( const SharedMemoryPage& used_page );
+	// Private inner types.
+	private:
+		// The type of memory pages this collection stores.
+		using MemoryPage		= ChunkedMemoryPage<CHUNKS_COUNT, CHUNK_SIZE, CHUNK_ALIGNMENT>;
 
-		// Proxy function that just cast `used_page` to `SharedMemoryPage` type.
-		inline void ReleaseMemoryPage( const std::shared_ptr<BasicChunkedMemoryPage>& used_page );
+		// Shared memory page.
+		using SharedMemoryPage	= std::shared_ptr<MemoryPage>;
 
 	// Private interface.
 	private:
