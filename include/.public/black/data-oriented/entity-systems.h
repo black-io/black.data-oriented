@@ -4,7 +4,7 @@
 // The prologue of library.
 #include "../../../.prologue.h"
 
-// Memory subsystem.
+// ESP subsystem.
 #include "../../../entity-systems/entity-systems.h"
 
 // The epilogue of library.

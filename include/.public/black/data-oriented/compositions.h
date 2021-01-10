@@ -4,7 +4,7 @@
 // The prologue of library.
 #include "../../../.prologue.h"
 
-// Memory subsystem.
+// Compositions subsystem.
 #include "../../../compositions/compositions.h"
 
 // The epilogue of library.

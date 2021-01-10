@@ -4,7 +4,7 @@
 // The prologue of library.
 #include "../../../.prologue.h"
 
-// Memory subsystem.
+// Concurrency subsystem.
 #include "../../../concurrency/concurrency.h"
 
 // The epilogue of library.
