@@ -23,25 +23,25 @@ inline namespace Compositions
 	template< typename TComponent >
 	inline TComponent& Composition<THost, TComponents...>::ConstructComponent()
 	{
-		constexpr size_t feature_index = GetComponentIndex<TComponent>();
-		void* const feature_memory = AllocationMediator::GetMemory( feature_index );
-		CRET( AllocationMediator::IsAllocated( feature_index ), *reinterpret_cast<TComponent*>( feature_memory ) );
+		constexpr size_t component_index = GetComponentIndex<TComponent>();
+		void* const component_memory = AllocationMediator::GetMemory( component_index );
+		CRET( AllocationMediator::IsAllocated( component_index ), *reinterpret_cast<TComponent*>( component_memory ) );
 
-		AllocationMediator::SetAllocated( feature_index );
-		return *ConstructionPolicy<TComponent>::Construct( feature_memory, GetHostOffset() + AllocationMediator::GetOffset( feature_index ) );
+		AllocationMediator::SetAllocated( component_index );
+		return *ConstructionPolicy<TComponent>::Construct( component_memory, GetHostOffset() + AllocationMediator::GetOffset( component_index ) );
 	}
 
 	template< typename THost, typename... TComponents >
 	template< typename TComponent >
 	inline void Composition<THost, TComponents...>::DestructComponent()
 	{
-		constexpr size_t feature_index = GetComponentIndex<TComponent>();
+		constexpr size_t component_index = GetComponentIndex<TComponent>();
 
-		CRET( !AllocationMediator::IsAllocated( feature_index ) );
-		void* const feature_memory = AllocationMediator::GetMemory( feature_index );
+		CRET( !AllocationMediator::IsAllocated( component_index ) );
+		void* const component_memory = AllocationMediator::GetMemory( component_index );
 
-		ConstructionPolicy<TComponent>::Destruct( feature_memory );
-		AllocationMediator::SetFree( feature_index );
+		ConstructionPolicy<TComponent>::Destruct( component_memory );
+		AllocationMediator::SetFree( component_index );
 	}
 
 	template< typename THost, typename... TComponents >
@@ -49,13 +49,13 @@ inline namespace Compositions
 	{
 		using DestructorList = Internal::PartDestructorList<THost, Parts>;
 
-		for( size_t feature_index = 0; feature_index < Parts::LENGTH; ++feature_index )
+		for( size_t component_index = 0; component_index < Parts::LENGTH; ++component_index )
 		{
-			CCON( !AllocationMediator::IsAllocated( feature_index ) );
+			CCON( !AllocationMediator::IsAllocated( component_index ) );
 
-			void* const feature_memory = AllocationMediator::GetMemory( feature_index );
-			DestructorList::FUNCTIONS[ feature_index ]( feature_memory );
-			AllocationMediator::SetFree( feature_index );
+			void* const component_memory = AllocationMediator::GetMemory( component_index );
+			DestructorList::FUNCTIONS[ component_index ]( component_memory );
+			AllocationMediator::SetFree( component_index );
 		}
 	}
 
@@ -63,40 +63,40 @@ inline namespace Compositions
 	template< typename TComponent >
 	inline TComponent& Composition<THost, TComponents...>::GetComponent()
 	{
-		TComponent* const feature = QueryComponent<TComponent>();
-		EXPECTS( feature != nullptr );
+		TComponent* const component = QueryComponent<TComponent>();
+		EXPECTS( component != nullptr );
 
-		return *feature;
+		return *component;
 	}
 
 	template< typename THost, typename... TComponents >
 	template< typename TComponent >
 	inline const TComponent& Composition<THost, TComponents...>::GetComponent() const
 	{
-		const TComponent* const feature = QueryComponent<TComponent>();
-		EXPECTS( feature != nullptr );
+		const TComponent* const component = QueryComponent<TComponent>();
+		EXPECTS( component != nullptr );
 
-		return *feature;
+		return *component;
 	}
 
 	template< typename THost, typename... TComponents >
 	template< typename TComponent >
 	inline TComponent* const Composition<THost, TComponents...>::QueryComponent()
 	{
-		constexpr size_t feature_index = GetComponentIndex<TComponent>();
+		constexpr size_t component_index = GetComponentIndex<TComponent>();
 
-		CRET( !AllocationMediator::IsAllocated( feature_index ), nullptr );
-		return reinterpret_cast<TComponent*>( AllocationMediator::GetMemory( feature_index ) );
+		CRET( !AllocationMediator::IsAllocated( component_index ), nullptr );
+		return reinterpret_cast<TComponent*>( AllocationMediator::GetMemory( component_index ) );
 	}
 
 	template< typename THost, typename... TComponents >
 	template< typename TComponent >
 	inline const TComponent* const Composition<THost, TComponents...>::QueryComponent() const
 	{
-		constexpr size_t feature_index = GetComponentIndex<TComponent>();
+		constexpr size_t component_index = GetComponentIndex<TComponent>();
 
-		CRET( !AllocationMediator::IsAllocated( feature_index ), nullptr );
-		return reinterpret_cast<const TComponent*>( AllocationMediator::GetMemory( feature_index ) );
+		CRET( !AllocationMediator::IsAllocated( component_index ), nullptr );
+		return reinterpret_cast<const TComponent*>( AllocationMediator::GetMemory( component_index ) );
 	}
 
 	template< typename THost, typename... TComponents >
@@ -107,9 +107,9 @@ inline namespace Compositions
 		return std::none_of(
 			std::cbegin( Indices::ITEMS ),
 			std::cend( Indices::ITEMS ),
-			[this]( const size_t feature_index ) -> bool
+			[this]( const size_t component_index ) -> bool
 			{
-				return AllocationMediator::IsAllocated( feature_index );
+				return AllocationMediator::IsAllocated( component_index );
 			}
 		);
 	}
@@ -125,14 +125,14 @@ inline namespace Compositions
 	template< typename... TQueriedComponents >
 	inline const bool Composition<THost, TComponents...>::HasAnyComponent() const
 	{
-		const size_t feature_indices[] = { GetComponentIndex<TQueriedComponents>()... };
+		const size_t component_indices[] = { GetComponentIndex<TQueriedComponents>()... };
 
 		return std::any_of(
-			std::cbegin( feature_indices ),
-			std::cend( feature_indices ),
-			[this]( const size_t feature_index ) -> bool
+			std::cbegin( component_indices ),
+			std::cend( component_indices ),
+			[this]( const size_t component_index ) -> bool
 			{
-				return AllocationMediator::IsAllocated( feature_index );
+				return AllocationMediator::IsAllocated( component_index );
 			}
 		);
 	}
@@ -141,14 +141,14 @@ inline namespace Compositions
 	template< typename... TQueriedComponents >
 	inline const bool Composition<THost, TComponents...>::HasAllComponents() const
 	{
-		const size_t feature_indices[] = { GetComponentIndex<TQueriedComponents>()... };
+		const size_t component_indices[] = { GetComponentIndex<TQueriedComponents>()... };
 
 		return std::all_of(
-			std::cbegin( feature_indices ),
-			std::cend( feature_indices ),
-			[this]( const size_t feature_index ) -> bool
+			std::cbegin( component_indices ),
+			std::cend( component_indices ),
+			[this]( const size_t component_index ) -> bool
 			{
-				return AllocationMediator::IsAllocated( feature_index );
+				return AllocationMediator::IsAllocated( component_index );
 			}
 		);
 	}
